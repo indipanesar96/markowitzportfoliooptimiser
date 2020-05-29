@@ -3,6 +3,8 @@
 #include "csv.h"
 #include <vector>
 #include "../DataRepository.h"
+#include "Matrix.h"
+
 #include <stdexcept>
 
 using namespace std;
@@ -37,12 +39,12 @@ Matrix::Matrix(int nRows_, int nCols_) {
 
 
 double Matrix::get(int n, int i) {
-    checkRowColDimensions(n, i);
+    checkInputRowColDimensions(n, i);
     return matrix[n][i];
 }
 
 
-void Matrix::checkRowColDimensions(int inputNRows, int inputNCols) const {
+void Matrix::checkInputRowColDimensions(int inputNRows, int inputNCols) const {
     if (inputNRows < 0 || inputNRows > nRows) {
         cout << "Matrix has " << nRows
              << " rows, cannot access row: " << inputNRows << endl;
@@ -58,7 +60,7 @@ void Matrix::checkRowColDimensions(int inputNRows, int inputNCols) const {
 
 
 void Matrix::set(int row, int col, double value) {
-    checkRowColDimensions(row, col);
+    checkInputRowColDimensions(row, col);
     matrix[row][col] = value;
 }
 
@@ -138,8 +140,45 @@ Matrix Matrix::multiply(Matrix &B) {
     }
 }
 
+void Matrix::checkRowColExists(int n, bool checkRow) const {
+
+    if (checkRow) {
+        if (n < 0 || n > nRows) {
+            cout << "Invalid row number!" << endl;
+            cout << "\tNRows: " << nRows << " you chose: " << n << endl;
+            exit(1);
+        }
+    } else {
+        if (n < 0 || n > nCols) {
+            cout << "Invalid column number!" << endl;
+            cout << "\tNCols: " << nCols << " you chose: " << n << endl;
+            exit(1);
+        }
+    }
+
+
+}
+
+
+vector<double> Matrix::getRow(int i) {
+    checkRowColExists(i, true);
+    return matrix[i];
+}
+
+vector<double> Matrix::getCol(int i) {
+    checkRowColExists(i, false);
+    vector<double> column = vector<double>(nRows);
+
+    for (int r = 0; r < nRows; r++) {
+        double columnValueForThisRow = matrix[r][i];
+        column[r] = columnValueForThisRow;
+    }
+
+    return column;
+}
+
 Matrix Matrix::get(int rowStart, int rowEnd, int colStart, int colEnd) {
-    // end of each range is not inclused
+    // end of each range is not included
     // i.e. get(2, 4, 3, 6) will return a matrix of shape (2, 3)
     // consisting of rows 2 and 3 and columns 3,4,5
 
@@ -171,3 +210,5 @@ Matrix Matrix::get(int rowStart, int rowEnd, int colStart, int colEnd) {
     }
     return res;
 }
+
+

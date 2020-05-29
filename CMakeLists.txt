@@ -1,10 +1,15 @@
 cmake_minimum_required(VERSION 3.15)
 project(markowitzportfoliooptimiser)
 set(CMAKE_CXX_STANDARD 14)
-add_executable(
-        markowitzportfoliooptimiser
-        src/util/csv
-        src/DataRepository
-        src/main
-        src/util/Matrix
-)
+set(SOURCE_FILES
+        src/util/csv.cpp
+        src/DataRepository.cpp
+        src/main.cpp
+        src/util/Matrix.cpp
+        test/MatrixTests.cpp src/ParameterEstimator.cpp src/ParameterEstimator.h)
+add_subdirectory(lib/gtest-1.10)
+include_directories(lib/gtest-1.10/googletest/include)
+include_directories(lib/gtest-1.10/googlemock/include)
+
+add_executable(markowitzportfoliooptimiser ${SOURCE_FILES})
+target_link_libraries(markowitzportfoliooptimiser gtest gtest_main)

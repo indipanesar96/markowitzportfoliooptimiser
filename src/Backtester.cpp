@@ -1,50 +1,81 @@
-//
-// Created by indy_ on 29/05/2020.
-//
-
 #include "Backtester.h"
 #include "util/Matrix.h"
 #include "DataRepository.h"
+#include "ParameterEstimator.h"
+#include <iostream>
+#include <algorithm> // for copy
+#include <iterator> // for ostream_iterator
+#include <vector>
 
 int Backtester::run(string filename, int nAssets, int nDays) {
+    // assets is columns, rows are days: C_ij = ith asseth, jth day
     Matrix all_returns = Matrix(nDays, nAssets);
 
-    DataRepository repo = DataRepository(filename, nAssets, nDays);
+    DataRepository(filename, nAssets, nDays).readData(&all_returns);
+    ParameterEstimator estimator = ParameterEstimator();
 
-    repo.readData(&all_returns);
-    all_returns.print();
+    int bWindowLength = 5; //days
+    int tWindowLength = 2; //days
 
-    Matrix A = Matrix(3, 2);
-    A.set(0, 0, 1);
-    A.set(0, 1, 2);
-    A.set(1, 0, 3);
-    A.set(1, 1, 4);
-    A.set(2, 0, 5);
-    A.set(2, 1, 6);
+    int bTestStart = 0;
+    int bTestEnd = nDays;
+//    std::copy(col.begin(), col.end(), std::ostream_iterator<char>(cout, " "));
 
-    Matrix B = Matrix(2, 3);
-    B.set(0, 0, 7);
-    B.set(0, 1, 8);
-    B.set(0, 2, 9);
-    B.set(1, 0, 10);
-    B.set(1, 1, 11);
-    B.set(1, 2, 12);
+    for (int day = 0; day < bTestEnd; day++) {
 
-    Matrix C = A.multiply(B);
-    A.print();
-    B.print();
-    C.print();
+        Matrix firstWindow = all_returns.get(
+                bTestStart,
+                bTestStart + bWindowLength,
+                0,
+                nAssets);
 
+        vector<double> meanReturns = estimator.estimateMeanReturns(&firstWindow);
 
-    int bWindowLength = 100; //days
-    int tWindowLength = 12; //days
+        Matrix test = Matrix(4, 3);
 
-    // assets is columns, rows are days: C_ij = ith asseth, jth day
+        test.set(0, 0, 45);
+        test.set(0, 1, 37);
+        test.set(0, 2, 42);
 
-    Matrix indexed = all_returns.get(2,4,0,3);
+        test.set(1, 0, 38);
+        test.set(1, 1, 31);
+        test.set(1, 2, 26);
 
-    indexed.print();
+        test.set(2, 0, 10);
+        test.set(2, 1, 15);
+        test.set(2, 2, 17);
+
+        test.set(3, 0, 1);
+        test.set(3, 1, 2);
+        test.set(3, 2, 3);
+
+        vector<double> fake = estimator.estimateMeanReturns(&test);
+
+        for(double elem:fake){
+            cout<<elem<<endl;
+        }
+
+        Matrix cov = estimator.estimateCovariances(&test, &fake);
+
+        cov.print();
+        exit(1);
+
+    }
+
+//    import numpy as np
+//
+//    A = [45,37,42]
+//    B = [38,31,26]
+//    C = [10,15,17]
+//    D = [1,2,3]
+//
+//    data = np.array([A,B,C,D]).T
+//
+//    print(data)
+//    print(np.mean(data, axis=0))
+//
+//    covMatrix = np.cov(data,bias=False)
+//    print (covMatrix)
 
     return 0;
-
 }
