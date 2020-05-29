@@ -1,7 +1,7 @@
 //
 
 #include <sstream>
-#include "src/Backtester.h"
+#include "Backtester.cpp"
 
 
 int main(int argc, char *argv[]) {
