@@ -45,5 +45,9 @@ int run(string filename, int nAssets, int nDays) {
     B.print();
     C.print();
 
+
+    Matrix D  = A.add(B);
+    D.print();
+
     return 0;
 }

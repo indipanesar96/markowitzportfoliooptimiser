@@ -85,6 +85,31 @@ void Matrix::print() {
     cout << endl;
 }
 
+Matrix Matrix::add(Matrix &B) {
+    Matrix C = Matrix(matrix.size(), B.getNCols());
+
+    const int aRows = matrix.size();     // a rows
+    const int aCols = matrix[0].size();  // a cols
+    const int bCols = B.getNCols();  // b cols
+    const int bRows = B.getNRows();  // b rows
+
+    if (aRows == bRows && aCols == bCols) {
+        double temp = 0.0;
+        for (int i = 0; i < aRows; ++i) {
+            for (int j = 0; j < aCols; ++j) {
+                C.set(i, j, matrix[i][j] + B.get(i, j));
+            }
+        }
+        return C;
+    } else {
+        cout << "Matrix A cols must = matrix B rows:" <<
+             "\n\tMatrix A cols:  " << aCols <<
+             "\n\tMatrix B rows:  " << bRows << endl;
+        exit(1);
+
+    }
+}
+
 Matrix Matrix::multiply(Matrix &B) {
     Matrix C = Matrix(matrix.size(), B.getNCols());
 

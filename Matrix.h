@@ -33,6 +33,7 @@ public:
     double get(int n, int i);
 
     Matrix multiply(Matrix &m1);
+    Matrix add(Matrix &m1);
 
     void print();
 };
