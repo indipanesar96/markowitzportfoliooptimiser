@@ -11,25 +11,30 @@
 
 using namespace std;
 
-template<typename T>
 class Matrix {
 private:
     int nRows;
     int nCols;
-    vector<vector<T>> matrix;
-    void checkInput(int n, int m);
+    vector<vector<double>> matrix;
+    // to store rows and then columns
+    // matrix = <<a11, a12, a13>, <a21, a22, a23>> for a 2x3 matrix
+
+    void checkRowColDimensions(int n, int m) const;
+
 public:
     Matrix(int nRows_, int nCols_);
 
-    int getNRows();
+    int getNRows() const;
 
-    int getNCols();
+    int getNCols() const;
 
-    void setElement(int row, int col, T value);
+    void set(int row, int col, double value);
 
-    T getElement(int n, int i);
+    double get(int n, int i);
 
-    void display();
+    Matrix multiply(Matrix &m1);
+
+    void print();
 };
 
 #endif //MARKOWITZPORTFOLIOOPTIMISER_MATRIX_H

@@ -6,11 +6,12 @@
 #include "csv.h"
 #include <cstring>
 #include "DataRepository.h"
+#include "Matrix.h"
 
 using namespace std;
 
 
-void DataRepository::readData(double **data) {
+void DataRepository::readData(Matrix* matrix) {
     char tmp[20];
     ifstream file(strcpy(tmp, fileName.c_str()));
     Csv csv(file);
@@ -22,8 +23,8 @@ void DataRepository::readData(double **data) {
         while (csv.getline(line) != 0) {
             for (int j = 0; j < csv.getnfield(); j++) {
                 double temp = string_to_double(csv.getfield(j));
-                cout << "Asset " << j << ", Return "<<i<<"="<< temp<<"\n";
-                data[j][i] = temp;
+//                cout << "Asset " << j << ", Return "<<i<<"="<< temp<<"\n";
+                matrix->set(i, j, temp);
             }
             i++;
         }
@@ -32,7 +33,6 @@ void DataRepository::readData(double **data) {
         cout << fileName << " missing\n";
         exit(0);
     }
-    cout << "end of function" << endl;
 }
 
 
