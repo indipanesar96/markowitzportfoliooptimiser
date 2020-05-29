@@ -1,13 +1,8 @@
-//
-// Created by indy_ on 28/05/2020.
-//
-
 #include <cstdlib>
 #include <sstream>
 #include "csv.h"
 #include <vector>
 #include "../DataRepository.h"
-#include "Matrix.h"
 #include <stdexcept>
 
 using namespace std;
@@ -117,24 +112,22 @@ Matrix Matrix::add(Matrix &B) {
 Matrix Matrix::multiply(Matrix &B) {
     Matrix C = Matrix(matrix.size(), B.getNCols());
 
-    const int aRows = matrix.size();
-    const int aCols = matrix[0].size();
     const int bCols = B.getNCols();
     const int bRows = B.getNRows();
 
-    if (aCols != bRows) {
+    if (nCols != bRows) {
         cout << "Matrix A cols must = matrix B rows:" <<
-             "\n\tMatrix A cols:  " << aCols <<
+             "\n\tMatrix A cols:  " << nCols <<
              "\n\tMatrix B rows:  " << bRows << endl;
         exit(1);
 
     } else {
         double temp = 0.0;
-        for (int i = 0; i < aRows; ++i) {
+        for (int i = 0; i < nRows; ++i) {
             for (int j = 0; j < bCols; ++j) {
-                for (int k = 0; k < aCols; ++k) {
+                for (int k = 0; k < nCols; ++k) {
                     temp += matrix[i][k] * B.get(k, j);
-                    if (k == aCols - 1) {
+                    if (k == nCols - 1) {
                         C.set(i, j, temp);
                         temp = 0.0;
                     }
@@ -143,4 +136,38 @@ Matrix Matrix::multiply(Matrix &B) {
         }
         return C;
     }
+}
+
+Matrix Matrix::get(int rowStart, int rowEnd, int colStart, int colEnd) {
+    // end of each range is not inclused
+    // i.e. get(2, 4, 3, 6) will return a matrix of shape (2, 3)
+    // consisting of rows 2 and 3 and columns 3,4,5
+
+    if (rowStart >= rowEnd || colStart >= colEnd) {
+        cout << "Index start positions must be before the end positions:" << endl;
+        cout << "\tRow Start: " << rowStart << ", Row End: " << rowEnd << endl;
+        cout << "\tCol Start: " << colStart << ", Col End: " << colEnd << endl;
+        exit(1);
+    }
+
+    if (rowEnd > nRows || colEnd > nCols || rowStart < 0 || colStart < 0) {
+        cout << "Indices out of bounds:" << endl;
+        cout << "\tRows in matrix: " << nRows << endl;
+        cout << "\tCols in matrix: " << nCols << endl;
+        cout << "\tYou tried: Row Start " << rowStart << ", Row End " << rowEnd << endl;
+        cout << "\tYou tried: Col Start " << colStart << ", Col End " << colEnd << endl;
+        exit(1);
+    }
+
+    int newMatrixRows = rowEnd - rowStart;
+    int newMatrixCols = colEnd - colStart;
+
+    Matrix res = Matrix(newMatrixRows, newMatrixCols);
+
+    for (int i = 0; i < newMatrixRows; i++) {
+        for (int j = 0; j < newMatrixCols; j++) {
+            res.set(i, j, matrix[rowStart + i][colStart + j]);
+        }
+    }
+    return res;
 }

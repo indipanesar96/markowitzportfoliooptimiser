@@ -31,9 +31,11 @@ public:
     void set(int row, int col, double value);
 
     double get(int n, int i);
+    Matrix get(int rowStart, int rowEnd, int colStart, int colEnd);
 
     Matrix multiply(Matrix &m1);
     Matrix add(Matrix &m1);
+
 
     void print();
 };
