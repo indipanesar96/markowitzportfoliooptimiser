@@ -3,10 +3,10 @@
 #include <fstream>
 #include <cstdlib>
 #include <sstream>
-#include "csv.h"
+#include "util/csv.h"
 #include <cstring>
 #include "DataRepository.h"
-#include "Matrix.h"
+#include "util/Matrix.h"
 
 using namespace std;
 

@@ -2,7 +2,7 @@
 #define MARKOWITZPORTFOLIOOPTIMISER_DATAREPOSITORY_H
 
 #include <cstring>
-#include "Matrix.h"
+#include "util/Matrix.h"
 
 class DataRepository {
 

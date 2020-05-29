@@ -6,7 +6,7 @@
 #include <sstream>
 #include "csv.h"
 #include <vector>
-#include "DataRepository.h"
+#include "../DataRepository.h"
 #include "Matrix.h"
 #include <stdexcept>
 
@@ -32,6 +32,11 @@ Matrix::Matrix(int nRows_, int nCols_) {
 
     for (int r = 0; r <= nRows; r++) {
         matrix[r].resize(nCols);
+    }
+    for (int i = 0; i < nRows; ++i) {
+        for (int j = 0; j < nCols; ++j) {
+            matrix[i][j] = 0.0;
+        }
     }
 }
 
@@ -88,13 +93,12 @@ void Matrix::print() {
 Matrix Matrix::add(Matrix &B) {
     Matrix C = Matrix(matrix.size(), B.getNCols());
 
-    const int aRows = matrix.size();     // a rows
-    const int aCols = matrix[0].size();  // a cols
-    const int bCols = B.getNCols();  // b cols
-    const int bRows = B.getNRows();  // b rows
+    const int aRows = matrix.size();
+    const int aCols = matrix[0].size();
+    const int bCols = B.getNCols();
+    const int bRows = B.getNRows();
 
     if (aRows == bRows && aCols == bCols) {
-        double temp = 0.0;
         for (int i = 0; i < aRows; ++i) {
             for (int j = 0; j < aCols; ++j) {
                 C.set(i, j, matrix[i][j] + B.get(i, j));
@@ -102,9 +106,9 @@ Matrix Matrix::add(Matrix &B) {
         }
         return C;
     } else {
-        cout << "Matrix A cols must = matrix B rows:" <<
-             "\n\tMatrix A cols:  " << aCols <<
-             "\n\tMatrix B rows:  " << bRows << endl;
+        cout << "Matrix A and B don't have the same dimensions:" <<
+             "\n\tMatrix A Dim: (" << aRows << ", " << aCols << ")" <<
+             "\n\tMatrix B Dim: (" << bRows << ", " << bCols << ")" << endl;
         exit(1);
 
     }
@@ -113,10 +117,10 @@ Matrix Matrix::add(Matrix &B) {
 Matrix Matrix::multiply(Matrix &B) {
     Matrix C = Matrix(matrix.size(), B.getNCols());
 
-    const int aRows = matrix.size();     // a rows
-    const int aCols = matrix[0].size();  // a cols
-    const int bCols = B.getNCols();  // b cols
-    const int bRows = B.getNRows();  // b rows
+    const int aRows = matrix.size();
+    const int aCols = matrix[0].size();
+    const int bCols = B.getNCols();
+    const int bRows = B.getNRows();
 
     if (aCols != bRows) {
         cout << "Matrix A cols must = matrix B rows:" <<

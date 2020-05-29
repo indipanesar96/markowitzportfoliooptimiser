@@ -12,10 +12,11 @@ int main(int argc, char *argv[]) {
     int numberAssets = 83;
     int numberDays = 700;
 
-    string fullFile = "../asset_returns.csv";
-    string testFile = "../test_asset_returns.csv";
+    string fullFile = "../resources/asset_returns.csv";
+    string testFile = "../resources/test_asset_returns.csv";
 
     run(testFile, testNAssets, testNDays);
+//    run(fullFile, numberAssets, numberDays);
 
     return 0;
 }
@@ -27,27 +28,6 @@ int run(string filename, int nAssets, int nDays) {
 
     repo.readData(&returns);
     returns.print();
-
-    Matrix A = Matrix(2, 2);
-    A.set(0, 0, 1);
-    A.set(0, 1, 2);
-    A.set(1, 0, 3);
-    A.set(1, 1, 4);
-
-    Matrix B = Matrix(2, 2);
-    B.set(0, 0, 5);
-    B.set(0, 1, 6);
-    B.set(1, 0, 7);
-    B.set(1, 1, 8);
-
-    Matrix C = A.multiply(B);
-    A.print();
-    B.print();
-    C.print();
-
-
-    Matrix D  = A.add(B);
-    D.print();
 
     return 0;
 }
