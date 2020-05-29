@@ -6,6 +6,7 @@
 
 class ParameterEstimator{
 public:
+
     vector<double> estimateMeanReturns(Matrix* m);
     Matrix estimateCovariances(Matrix* m, vector<double>* meanReturns);
 };
