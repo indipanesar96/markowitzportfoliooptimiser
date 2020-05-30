@@ -14,7 +14,10 @@ int Backtester::run(string filename, int nAssets, int nDays) {
 
     DataRepository(filename, nAssets, nDays).readData(&all_returns);
     ParameterEstimator estimator = ParameterEstimator();
-    PortfolioOptimiser optimiser = PortfolioOptimiser(0.000001, 0.5, 0.5);
+    PortfolioOptimiser optimiser = PortfolioOptimiser(0.000001, 0.5, 0.5, all_returns.getNCols());
+
+    // for initial testing, ideally we should pass this in from main
+    optimiser.setRequiredPortfolioReturn(10.0);
 
     int bWindowLength = 5; //days
     int tWindowLength = 2; //days

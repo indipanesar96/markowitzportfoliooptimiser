@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
 
-    int testNAssets = 3;
+    int testNAssets = 2;
     int testNDays = 9;
     int numberAssets = 83;
     int numberDays = 700;

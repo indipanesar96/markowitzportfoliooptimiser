@@ -20,6 +20,9 @@ private:
 
     void checkRowColExists(int n, bool checkRow) const;
 
+    void checkDimsForMultiplication(int bRows) const;
+
+
 public:
     Matrix(int nRows_, int nCols_);
 
@@ -42,6 +45,8 @@ public:
     vector<double> getRow(int i);
 
     vector<double> getCol(int i);
+
+    vector<double> multiplyVector(vector<double> *vec);
 
 };
 

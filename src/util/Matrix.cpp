@@ -58,6 +58,24 @@ void Matrix::checkInputRowColDimensions(int inputNRows, int inputNCols) const {
     }
 }
 
+vector<double> Matrix::multiplyVector(vector<double> *vec) {
+
+    int finalLength = vec->size();
+
+    checkDimsForMultiplication(finalLength);
+
+    vector<double> result = vector<double>(finalLength);
+
+    cout << "hi"<<endl;
+    for (int r = 0; r < nRows; r++) {
+        double temp = 0.0;
+        for (int c = 0; c < nCols; c++) {
+            temp += matrix[r][c] * vec->at(c);
+        }
+        result.at(r) = temp;
+    }
+    return result;
+}
 
 void Matrix::set(int row, int col, double value) {
     checkInputRowColDimensions(row, col);
@@ -111,34 +129,40 @@ Matrix Matrix::add(Matrix &B) {
     }
 }
 
+void Matrix::checkDimsForMultiplication(int bRows) const {
+    // first matrix for multiplication is always self
+    // ie A.multiply(B), then nCols is the number of columns in A
+    if (nCols != bRows) {
+        cout << "Matrix A cols must = matrix B rows:" <<
+             "\n\tMatrix A cols:  " << nCols <<
+             "\n\tMatrix B rows:  " << bRows << endl;
+        exit(1);
+    }
+}
+
 Matrix Matrix::multiply(Matrix &B) {
     Matrix C = Matrix(matrix.size(), B.getNCols());
 
     const int bCols = B.getNCols();
     const int bRows = B.getNRows();
 
-    if (nCols != bRows) {
-        cout << "Matrix A cols must = matrix B rows:" <<
-             "\n\tMatrix A cols:  " << nCols <<
-             "\n\tMatrix B rows:  " << bRows << endl;
-        exit(1);
+    checkDimsForMultiplication(bRows);
 
-    } else {
-        double temp = 0.0;
-        for (int i = 0; i < nRows; ++i) {
-            for (int j = 0; j < bCols; ++j) {
-                for (int k = 0; k < nCols; ++k) {
-                    temp += matrix[i][k] * B.get(k, j);
-                    if (k == nCols - 1) {
-                        C.set(i, j, temp);
-                        temp = 0.0;
-                    }
+    double temp = 0.0;
+    for (int i = 0; i < nRows; ++i) {
+        for (int j = 0; j < bCols; ++j) {
+            for (int k = 0; k < nCols; ++k) {
+                temp += matrix[i][k] * B.get(k, j);
+                if (k == nCols - 1) {
+                    C.set(i, j, temp);
+                    temp = 0.0;
                 }
             }
         }
-        return C;
     }
+    return C;
 }
+
 
 void Matrix::checkRowColExists(int n, bool checkRow) const {
 
