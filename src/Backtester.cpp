@@ -3,6 +3,7 @@
 #include "DataRepository.h"
 #include "PortfolioOptimiser.h"
 #include "ParameterEstimator.h"
+#include "Portfolio.h"
 #include <iostream>
 #include <cmath>
 #include <algorithm> // for copy
@@ -16,6 +17,7 @@ int Backtester::run(string filename, int nAssets, int nDays) {
     DataRepository(filename, nAssets, nDays).readData(&all_returns);
     ParameterEstimator estimator = ParameterEstimator();
     PortfolioOptimiser optimiser = PortfolioOptimiser(pow(10, -6), 0.5, 0.5, all_returns.getNCols());
+    Portfolio portfolio = Portfolio();
 
     // for initial testing, ideally we should pass this in from main
     double dailyReturn = 0.0001;
@@ -27,8 +29,8 @@ int Backtester::run(string filename, int nAssets, int nDays) {
     int bTestStart = 0;
     int bTestEnd = nDays;
 //    std::copy(col.begin(), col.end(), std::ostream_iterator<char>(cout, " "));
-
-    for (int day = 0; day < bTestEnd; day++) {
+    int day=0;
+    while (day < bTestEnd){
 
         Matrix firstWindow = all_returns.get(
                 bTestStart,
@@ -42,8 +44,12 @@ int Backtester::run(string filename, int nAssets, int nDays) {
 
         vector<double> portfolioWeights = optimiser.calculateWeights(&cov, &meanReturns);
 
-        exit(1);
+        portfolio.addWeightsToHistory(portfolioWeights);
 
+
+
+        exit(1);
+        day++;
     }
 
     return 0;

@@ -18,7 +18,7 @@ private:
 
     Matrix generateQ(Matrix *covariances, vector<double> *meanReturns) const;
 
-    vector<double> conjugateGradientMethod(Matrix *Q, vector<double> *X0, vector<double> *B) ;
+    vector<double> conjugateGradientMethod(Matrix *Q, vector<double> *X0, vector<double> *B) const ;
 
 
 public:

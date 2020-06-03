@@ -1,4 +1,4 @@
-#include <valarray>
+
 #include <numeric>
 #include <cmath>
 #include "PortfolioOptimiser.h"
@@ -31,21 +31,14 @@ vector<double> PortfolioOptimiser::calculateWeights
 
 vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
                                                            vector<double> *X0,
-                                                           vector<double> *B) {
-
-    Q->print();
-    print(B);
-    cout << endl;
-    print(X0);
-
+                                                           vector<double> *B) const {
     vector<double> QX0 = Q->multiplyVector(X0);
     vector<double> sK = vectorSubtract(B, &QX0);
 
     double sumSquaredError = inner_product(begin(sK), end(sK), begin(sK), 0.0);
-    cout << "sumSquaredError: " << sumSquaredError << endl;
+    cout << "Initial sumSquaredError: " << sumSquaredError << endl;
 
     vector<double> pK = sK;
-    int vectorSize = pK.size();
     vector<double> xK = *X0;
 
     int counter = 0;
@@ -55,10 +48,9 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         double alpha = sumSquaredError / innerProduct(&pK, &qPK);
 
+        xK = multiplyVector(1.0, &xK, alpha, &pK);
 
-        xK = dot(1.0, &xK, alpha, &pK);
-
-        sK = dot(1.0, &sK, -alpha, &qPK);
+        sK = multiplyVector(1.0, &sK, -alpha, &qPK);
 
         double newSumSquaredError = innerProduct(&sK, &sK);
 
@@ -66,23 +58,21 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         double beta = newSumSquaredError / sumSquaredError ;
 
-        pK = dot(1.0, &sK, beta, &pK);
+        pK = multiplyVector(1.0, &sK, beta, &pK);
 
         sumSquaredError = newSumSquaredError;
 
-        counter += 1;
-        cout << "Loop: " << counter << " error: " << sumSquaredError << endl;
-
-        if (counter == 10) {
+        counter ++;
+        if (counter == Q->getNRows()) {
             cout << "Something has gone wrong, conjugate gradient should've converged by now.." << endl;
             cout << "\t Error: "<< sumSquaredError << endl;
             exit(1);
         }
     }
-    cout << "done"<<endl;
+    cout << "Done, this is x: "<<endl;
     print(&xK);
 
-    exit(1);
+    return xK;
 }
 
 vector<double> PortfolioOptimiser::generateB() const {
