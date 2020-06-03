@@ -4,6 +4,7 @@
 #include "PortfolioOptimiser.h"
 #include "ParameterEstimator.h"
 #include <iostream>
+#include <cmath>
 #include <algorithm> // for copy
 #include <iterator> // for ostream_iterator
 #include <vector>
@@ -14,10 +15,11 @@ int Backtester::run(string filename, int nAssets, int nDays) {
 
     DataRepository(filename, nAssets, nDays).readData(&all_returns);
     ParameterEstimator estimator = ParameterEstimator();
-    PortfolioOptimiser optimiser = PortfolioOptimiser(0.000001, 0.5, 0.5, all_returns.getNCols());
+    PortfolioOptimiser optimiser = PortfolioOptimiser(pow(10, -6), 0.5, 0.5, all_returns.getNCols());
 
     // for initial testing, ideally we should pass this in from main
-    optimiser.setRequiredPortfolioReturn(10.0);
+    double dailyReturn = 0.0001;
+    optimiser.setTargetDailyReturn(dailyReturn);
 
     int bWindowLength = 5; //days
     int tWindowLength = 2; //days
@@ -38,7 +40,6 @@ int Backtester::run(string filename, int nAssets, int nDays) {
 
         Matrix cov = estimator.estimateCovariances(&firstWindow, &meanReturns);
 
-        cov.print();
         vector<double> portfolioWeights = optimiser.calculateWeights(&cov, &meanReturns);
 
         exit(1);

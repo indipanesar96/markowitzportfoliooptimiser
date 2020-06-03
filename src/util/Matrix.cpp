@@ -59,6 +59,8 @@ void Matrix::checkInputRowColDimensions(int inputNRows, int inputNCols) const {
 }
 
 vector<double> Matrix::multiplyVector(vector<double> *vec) {
+    // checker : https://matrix.reshish.com/multiplication.php
+
 
     int finalLength = vec->size();
 
@@ -66,7 +68,6 @@ vector<double> Matrix::multiplyVector(vector<double> *vec) {
 
     vector<double> result = vector<double>(finalLength);
 
-    cout << "hi"<<endl;
     for (int r = 0; r < nRows; r++) {
         double temp = 0.0;
         for (int c = 0; c < nCols; c++) {
@@ -105,24 +106,44 @@ void Matrix::print() {
     cout << endl;
 }
 
-Matrix Matrix::add(Matrix &B) {
-    Matrix C = Matrix(matrix.size(), B.getNCols());
+Matrix Matrix::subtract(Matrix *B) {
+    Matrix C = Matrix(nRows, nCols);
 
-    const int aRows = matrix.size();
-    const int aCols = matrix[0].size();
-    const int bCols = B.getNCols();
-    const int bRows = B.getNRows();
+    const int bCols = B->getNCols();
+    const int bRows = B->getNRows();
 
-    if (aRows == bRows && aCols == bCols) {
-        for (int i = 0; i < aRows; ++i) {
-            for (int j = 0; j < aCols; ++j) {
-                C.set(i, j, matrix[i][j] + B.get(i, j));
+    if (nRows == bRows && nCols == bCols) {
+        for (int i = 0; i < nRows; ++i) {
+            for (int j = 0; j < nCols; ++j) {
+                C.set(i, j, matrix[i][j] - B->get(i, j));
             }
         }
         return C;
     } else {
         cout << "Matrix A and B don't have the same dimensions:" <<
-             "\n\tMatrix A Dim: (" << aRows << ", " << aCols << ")" <<
+             "\n\tMatrix A Dim: (" << nRows << ", " << nCols << ")" <<
+             "\n\tMatrix B Dim: (" << bRows << ", " << bCols << ")" << endl;
+        exit(1);
+
+    }
+}
+
+Matrix Matrix::add(Matrix *B) {
+    Matrix C = Matrix(nRows, nCols);
+
+    const int bCols = B->getNCols();
+    const int bRows = B->getNRows();
+
+    if (nRows == bRows && nCols == bCols) {
+        for (int i = 0; i < nRows; ++i) {
+            for (int j = 0; j < nCols; ++j) {
+                C.set(i, j, matrix[i][j] + B->get(i, j));
+            }
+        }
+        return C;
+    } else {
+        cout << "Matrix A and B don't have the same dimensions:" <<
+             "\n\tMatrix A Dim: (" << nRows << ", " << nCols << ")" <<
              "\n\tMatrix B Dim: (" << bRows << ", " << bCols << ")" << endl;
         exit(1);
 
@@ -140,11 +161,13 @@ void Matrix::checkDimsForMultiplication(int bRows) const {
     }
 }
 
-Matrix Matrix::multiply(Matrix &B) {
-    Matrix C = Matrix(matrix.size(), B.getNCols());
+Matrix Matrix::multiply(Matrix *B) {
+    // checker : https://matrix.reshish.com/multiplication.php
 
-    const int bCols = B.getNCols();
-    const int bRows = B.getNRows();
+    Matrix C = Matrix(matrix.size(), B->getNCols());
+
+    const int bCols = B->getNCols();
+    const int bRows = B->getNRows();
 
     checkDimsForMultiplication(bRows);
 
@@ -152,7 +175,7 @@ Matrix Matrix::multiply(Matrix &B) {
     for (int i = 0; i < nRows; ++i) {
         for (int j = 0; j < bCols; ++j) {
             for (int k = 0; k < nCols; ++k) {
-                temp += matrix[i][k] * B.get(k, j);
+                temp += matrix[i][k] * B->get(k, j);
                 if (k == nCols - 1) {
                     C.set(i, j, temp);
                     temp = 0.0;

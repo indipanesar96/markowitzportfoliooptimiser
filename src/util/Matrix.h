@@ -36,10 +36,6 @@ public:
 
     Matrix get(int rowStart, int rowEnd, int colStart, int colEnd);
 
-    Matrix multiply(Matrix &m1);
-
-    Matrix add(Matrix &m1);
-
     void print();
 
     vector<double> getRow(int i);
@@ -48,6 +44,10 @@ public:
 
     vector<double> multiplyVector(vector<double> *vec);
 
+    Matrix multiply(Matrix *B);
+
+    Matrix subtract(Matrix *B);
+    Matrix add(Matrix *B);
 };
 
 #endif //MARKOWITZPORTFOLIOOPTIMISER_MATRIX_H

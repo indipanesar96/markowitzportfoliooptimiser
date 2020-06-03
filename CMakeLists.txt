@@ -6,7 +6,7 @@ set(SOURCE_FILES
         src/DataRepository.cpp
         src/main.cpp
         src/util/Matrix.cpp
-        test/MatrixTests.cpp src/ParameterEstimator.cpp src/ParameterEstimator.h src/PortfolioOptimiser.cpp src/PortfolioOptimiser.h)
+        test/MatrixTests.cpp src/ParameterEstimator.cpp src/ParameterEstimator.h src/PortfolioOptimiser.cpp src/PortfolioOptimiser.h src/util/VectorUtil.cpp src/util/VectorUtil.h)
 add_subdirectory(lib/gtest-1.10)
 include_directories(lib/gtest-1.10/googletest/include)
 include_directories(lib/gtest-1.10/googlemock/include)

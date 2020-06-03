@@ -14,11 +14,11 @@ private:
 
     vector<double> calculateX0() const;
 
-    vector<double> calculateB() const;
+    vector<double> generateB() const;
 
-    Matrix calculateQ(Matrix *covariances, vector<double> *meanReturns) const;
+    Matrix generateQ(Matrix *covariances, vector<double> *meanReturns) const;
 
-    vector<double> conjugateGradientMethod(Matrix *Q, vector<double> *X0, vector<double> *B) const;
+    vector<double> conjugateGradientMethod(Matrix *Q, vector<double> *X0, vector<double> *B) ;
 
 
 public:
@@ -32,7 +32,7 @@ public:
         nAssets = nAssets_;
     }
 
-    void setRequiredPortfolioReturn(double portfolioReturn_) {
+    void setTargetDailyReturn(double portfolioReturn_) {
         portfolioReturn = portfolioReturn_;
     }
 

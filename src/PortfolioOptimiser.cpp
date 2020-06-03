@@ -1,4 +1,10 @@
+#include <valarray>
+#include <numeric>
+#include <cmath>
 #include "PortfolioOptimiser.h"
+#include "util/VectorUtil.h"
+
+using namespace std;
 
 vector<double> PortfolioOptimiser::calculateWeights
         (Matrix *covariances, vector<double> *meanReturns) {
@@ -7,41 +13,79 @@ vector<double> PortfolioOptimiser::calculateWeights
 
 
     // 1: initialise x0
-    vector<double> x0 = calculateX0();
+    vector<double> X0 = calculateX0();
 
     // 2. create Q (i+2 x i+2) matrix, i=num assets
-    Matrix Q = calculateQ(covariances, meanReturns);
-    Q.print();
+    Matrix Q = this->generateQ(covariances, meanReturns);
 
     // 3. create b (static)
-    vector<double> B = calculateB();
-
-
+    vector<double> B = this->generateB();
 
     // 4. run conjugate method
 
-    //https://stackoverflow.com/questions/10908012/computing-the-scalar-product-of-two-vectors-in-c
-
+    vector<double> something = this->conjugateGradientMethod(&Q, &X0, &B);
 
 
     return vector<double>();
 }
 
-vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix* Q,
-                                                          vector<double>* X0,
-                                                          vector<double>* B) const {
-    vector<double> product = Q->multiplyVector(X0);
-    for (double elem: product) {
-        cout << elem << endl;
+vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
+                                                           vector<double> *X0,
+                                                           vector<double> *B) {
 
+    Q->print();
+    print(B);
+    cout << endl;
+    print(X0);
+
+    vector<double> QX0 = Q->multiplyVector(X0);
+    vector<double> sK = vectorSubtract(B, &QX0);
+
+    double sumSquaredError = inner_product(begin(sK), end(sK), begin(sK), 0.0);
+    cout << "sumSquaredError: " << sumSquaredError << endl;
+
+    vector<double> pK = sK;
+    int vectorSize = pK.size();
+    vector<double> xK = *X0;
+
+    int counter = 0;
+    while (sumSquaredError > epsilon) {
+
+        vector<double> qPK = Q->multiplyVector(&pK);
+
+        double alpha = sumSquaredError / innerProduct(&pK, &qPK);
+
+
+        xK = dot(1.0, &xK, alpha, &pK);
+
+        sK = dot(1.0, &sK, -alpha, &qPK);
+
+        double newSumSquaredError = innerProduct(&sK, &sK);
+
+        if (newSumSquaredError < epsilon) break;
+
+        double beta = newSumSquaredError / sumSquaredError ;
+
+        pK = dot(1.0, &sK, beta, &pK);
+
+        sumSquaredError = newSumSquaredError;
+
+        counter += 1;
+        cout << "Loop: " << counter << " error: " << sumSquaredError << endl;
+
+        if (counter == 10) {
+            cout << "Something has gone wrong, conjugate gradient should've converged by now.." << endl;
+            cout << "\t Error: "<< sumSquaredError << endl;
+            exit(1);
+        }
     }
-    // checker : https://matrix.reshish.com/multiplication.php
+    cout << "done"<<endl;
+    print(&xK);
 
-
+    exit(1);
 }
 
-
-vector<double> PortfolioOptimiser::calculateB() const {
+vector<double> PortfolioOptimiser::generateB() const {
 
     vector<double> b = vector<double>(nAssets + 2);
     b[nAssets] = -portfolioReturn;
@@ -49,7 +93,7 @@ vector<double> PortfolioOptimiser::calculateB() const {
     return b;
 }
 
-Matrix PortfolioOptimiser::calculateQ(Matrix *covariances, vector<double> *meanReturns) const {
+Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanReturns) const {
 
     Matrix q = Matrix(nAssets + 2, nAssets + 2);
 
@@ -60,7 +104,7 @@ Matrix PortfolioOptimiser::calculateQ(Matrix *covariances, vector<double> *meanR
     }
 
     for (int j = 0; j < nAssets; j++) {
-        double thisMeanReturn = (*meanReturns)[j];
+        double thisMeanReturn = meanReturns->at(j);
 
         q.set(j, nAssets, -thisMeanReturn);
         q.set(j, nAssets + 1, -1);
@@ -80,11 +124,39 @@ vector<double> PortfolioOptimiser::calculateX0() const {
         // first guess is an equally weighted portfolio
         x0[i] = 1.0 / nAssets;
     }
-    x0[nAssets + 0] = initialLambda;
+    x0[nAssets] = initialLambda;
     x0[nAssets + 1] = initialMu;
 
     return x0;
 }
 
+
+//    Matrix test = Matrix(4, 4);
+//
+//    test.set(0, 0, 1);
+//    test.set(0, 1, 1);
+//    test.set(0, 2, 1);
+//    test.set(0, 3, 1);
+//
+//    test.set(1, 0, 2);
+//    test.set(1, 1, 2);
+//    test.set(1, 2, 2);
+//    test.set(1, 3, 2);
+//
+//    test.set(2, 0, 3);
+//    test.set(2, 1, 3);
+//    test.set(2, 2, 3);
+//    test.set(2, 3, 3);
+//
+//    test.set(3, 0, 4);
+//    test.set(3, 1, 4);
+//    test.set(3, 2, 4);
+//    test.set(3, 3, 4);
+//
+//    vector<double> sK;
+//    sK.push_back(2);
+//    sK.push_back(3);
+//    sK.push_back(4);
+//    sK.push_back(5);
 
 
