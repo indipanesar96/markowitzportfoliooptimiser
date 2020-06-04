@@ -1,4 +1,3 @@
-#include <sstream>
 #include "backtest/Backtester.cpp"
 #include "util/RunConfig.h"
 
@@ -7,10 +6,11 @@ int main(int argc, char *argv[]) {
     RunConfig medium = RunConfig(0.5, 0.5, 50, 4, "../resources/medium_asset_returns.csv");
     RunConfig large = RunConfig(0.5, 0.5, 700, 83, "../resources/asset_returns.csv");
 
-    Backtester b;
-//    b.run(small);
-//    b.run(medium);
-    b.run(large);
+    double targetReturn = 0.0001;
+    Backtester b(large);
+//    b.run(small, targetReturn);
+//    b.run(medium, targetReturn);
+    b.run(targetReturn);
 
     return 0;
 }

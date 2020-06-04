@@ -1,43 +1,38 @@
 #include "Backtester.h"
-#include "../util/Matrix.h"
-#include "../util/RunConfig.h"
-#include "../repository/DataRepository.h"
-#include "../portfolio/PortfolioOptimiser.h"
-#include "../parameterestimator/ParameterEstimator.h"
-#include "../portfolio/Portfolio.h"
 #include <iostream>
 #include <cmath>
 #include <vector>
 
-int Backtester::run(RunConfig config) {
-    // assets is columns, rows are days: C_ij = ith asseth, jth day
+Backtester::Backtester(RunConfig config_) {
+    config = config_;
+    all_returns = Matrix(config_.nDays, config_.nAssets);
 
-    Matrix all_returns = Matrix(config.nDays, config.nAssets);
+    DataRepository(config_.fileName).readData(&all_returns);
+    estimator = ParameterEstimator();
 
-    DataRepository(config.fileName).readData(&all_returns);
-    ParameterEstimator estimator = ParameterEstimator();
+    optimiser = PortfolioOptimiser(config_.EPSILON,
+                                   config_.initialLambda,
+                                   config_.initialMu,
+                                   config_.nAssets,
+                                   config_.nDays);
+    portfolio = Portfolio();
+}
 
-    PortfolioOptimiser optimiser = PortfolioOptimiser(config.EPSILON,
-                                                      config.initialLambda,
-                                                      config.initialMu,
-                                                      config.nAssets);
-    Portfolio portfolio = Portfolio();
+int Backtester::run(double dailyReturn) {
+    // assets is columns, rows are days: C_ij = ith asset, jth day
 
-    // for initial testing, ideally we should pass this in from main
-    double dailyReturn = 0.0001;
     optimiser.setTargetDailyReturn(dailyReturn);
 
-    int bWindowLength = 5; //days
-    int tWindowLength = 2; //days
+    int bWindowLength = 100; //days
+    int tWindowLength = 12; //days
 
     int bTestStart = 100;
     int bTestEnd = config.nDays;
-//    std::copy(col.begin(), col.end(), std::ostream_iterator<char>(cout, " "));
-    int day = 0;
-    while (day < bTestEnd) {
+
+    for (int day = bTestStart; day < config.nDays; day += 100) {
 
         Matrix firstWindow = all_returns.get(
-                bTestStart,
+                day,
                 bTestStart + bWindowLength,
                 0,
                 config.nAssets);
@@ -48,14 +43,12 @@ int Backtester::run(RunConfig config) {
 
         vector<double> portfolioWeights = optimiser.calculateWeights(&cov, &meanReturns);
 
-        cout << "backtester" << endl;
         print(&portfolioWeights);
 
         portfolio.addWeightsToHistory(portfolioWeights);
+        cout << "done" << endl;
 
-
-        exit(1);
-        day++;
+        exit(42);
     }
 
     return 0;

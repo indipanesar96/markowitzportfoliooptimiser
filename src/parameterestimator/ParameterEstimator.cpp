@@ -41,38 +41,3 @@ Matrix ParameterEstimator::estimateCovariances
 
     return covariances;
 }
-//    import numpy as np
-//
-//    A = [45,37,42]
-//    B = [38,31,26]
-//    C = [10,15,17]
-//    D = [1,2,3]
-//
-//    data = np.array([A,B,C,D]).T
-//
-//    print(data)
-//    print(np.mean(data, axis=0))
-//
-//    covMatrix = np.cov(data,bias=False)
-//    print (covMatrix)
-
-
-//Matrix test = Matrix(4, 3);
-//
-//vector<double> fake = estimator.estimateMeanReturns(&test);
-//
-//test.set(0, 0, 45);
-//test.set(0, 1, 37);
-//test.set(0, 2, 42);
-//
-//test.set(1, 0, 38);
-//test.set(1, 1, 31);
-//test.set(1, 2, 26);
-//
-//test.set(2, 0, 10);
-//test.set(2, 1, 15);
-//test.set(2, 2, 17);
-//
-//test.set(3, 0, 1);
-//test.set(3, 1, 2);
-//test.set(3, 2, 3);

@@ -33,26 +33,24 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
     vector<double> xK = *X0;
 
     int counter = 0;
-    while (sumSquaredError > epsilon) {
+    while (sumSquaredError > EPSILON) {
 
         vector<double> qPK = Q->multiplyVector(&pK);
 
         double alpha = sumSquaredError / innerProduct(&pK, &qPK);
 
         xK = multiplyVector(1.0, &xK, alpha, &pK);
-
         sK = multiplyVector(1.0, &sK, -alpha, &qPK);
 
         double newSumSquaredError = innerProduct(&sK, &sK);
 
-        if (newSumSquaredError < epsilon) break;
+        if (newSumSquaredError < EPSILON) break;
 
         double beta = newSumSquaredError / sumSquaredError;
 
         pK = multiplyVector(1.0, &sK, beta, &pK);
 
         sumSquaredError = newSumSquaredError;
-
         counter++;
         if (counter == Q->getNRows()) {
             cout << "Something has gone wrong, conjugate gradient should've converged by now.." << endl;
@@ -78,7 +76,7 @@ Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanRe
 
     Matrix q = Matrix(nAssets + 2, nAssets + 2);
 
-    for (int i = 0; i < covariances->getNRows(); i++) {
+    for (int i = 0; i < nAssets; i++) {
         for (int j = 0; j < nAssets; j++) {
             q.set(i, j, covariances->get(i, j));
         }

@@ -1,13 +1,13 @@
 #ifndef MARKOWITZPORTFOLIOOPTIMISER_RUNCONFIG_H
 #define MARKOWITZPORTFOLIOOPTIMISER_RUNCONFIG_H
-//#include <iostream>
 
 #include <cmath>
 #include <string>
 #include <cstdlib>
 
 using namespace std;
-class RunConfig{
+
+class RunConfig {
 
 public:
     RunConfig(
@@ -16,13 +16,14 @@ public:
             int nDays_,
             int nAssets_,
             string fileName_
-            ){
+    ) {
         initialLambda = initialLambda_;
         initialMu = initialMu_;
         nAssets = nAssets_;
         nDays = nDays_;
         fileName = fileName_;
     }
+
     double initialLambda;
     double initialMu;
     int nAssets;
