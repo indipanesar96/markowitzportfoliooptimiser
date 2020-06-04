@@ -12,7 +12,7 @@ using namespace std;
 
 
 void DataRepository::readData(Matrix* matrix) {
-    char tmp[20];
+    char tmp[100]; // this is the max size the filename can be, otherwise stack buffer overflow
     ifstream file(strcpy(tmp, fileName.c_str()));
     Csv csv(file);
     string line;

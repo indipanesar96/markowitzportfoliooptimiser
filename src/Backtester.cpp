@@ -6,8 +6,6 @@
 #include "Portfolio.h"
 #include <iostream>
 #include <cmath>
-#include <algorithm> // for copy
-#include <iterator> // for ostream_iterator
 #include <vector>
 
 int Backtester::run(string filename, int nAssets, int nDays) {
@@ -43,6 +41,9 @@ int Backtester::run(string filename, int nAssets, int nDays) {
         Matrix cov = estimator.estimateCovariances(&firstWindow, &meanReturns);
 
         vector<double> portfolioWeights = optimiser.calculateWeights(&cov, &meanReturns);
+
+        cout <<"backltester"<<endl;
+        print(&portfolioWeights);
 
         portfolio.addWeightsToHistory(portfolioWeights);
 

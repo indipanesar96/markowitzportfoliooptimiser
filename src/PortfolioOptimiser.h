@@ -12,13 +12,13 @@ private:
     double portfolioReturn{};
     int nAssets;
 
-    vector<double> calculateX0() const;
+    vector<double> calculateX0() ;
 
-    vector<double> generateB() const;
+    vector<double> generateB() ;
 
-    Matrix generateQ(Matrix *covariances, vector<double> *meanReturns) const;
+    Matrix generateQ(Matrix *covariances, vector<double> *meanReturns) ;
 
-    vector<double> conjugateGradientMethod(Matrix *Q, vector<double> *X0, vector<double> *B) const ;
+    vector<double> conjugateGradientMethod(Matrix *Q, vector<double> *X0, vector<double> *B) ;
 
 
 public:

@@ -9,29 +9,22 @@ using namespace std;
 vector<double> PortfolioOptimiser::calculateWeights
         (Matrix *covariances, vector<double> *meanReturns) {
 
-    int nAssets = covariances->getNCols();
-
-
-    // 1: initialise x0
     vector<double> X0 = calculateX0();
 
-    // 2. create Q (i+2 x i+2) matrix, i=num assets
     Matrix Q = this->generateQ(covariances, meanReturns);
 
-    // 3. create b (static)
     vector<double> B = this->generateB();
-
-    // 4. run conjugate method
 
     vector<double> something = this->conjugateGradientMethod(&Q, &X0, &B);
 
 
-    return vector<double>();
+
+    return something;
 }
 
 vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
                                                            vector<double> *X0,
-                                                           vector<double> *B) const {
+                                                           vector<double> *B) {
     vector<double> QX0 = Q->multiplyVector(X0);
     vector<double> sK = vectorSubtract(B, &QX0);
 
@@ -56,34 +49,37 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         if (newSumSquaredError < epsilon) break;
 
-        double beta = newSumSquaredError / sumSquaredError ;
+        double beta = newSumSquaredError / sumSquaredError;
 
         pK = multiplyVector(1.0, &sK, beta, &pK);
 
         sumSquaredError = newSumSquaredError;
 
-        counter ++;
+        counter++;
         if (counter == Q->getNRows()) {
             cout << "Something has gone wrong, conjugate gradient should've converged by now.." << endl;
-            cout << "\t Error: "<< sumSquaredError << endl;
+            cout << "\t Error: " << sumSquaredError << endl;
             exit(1);
         }
     }
-    cout << "Done, this is x: "<<endl;
+    cout << "Done, this is x: " << endl;
     print(&xK);
 
     return xK;
 }
 
-vector<double> PortfolioOptimiser::generateB() const {
+vector<double> PortfolioOptimiser::generateB() {
 
     vector<double> b = vector<double>(nAssets + 2);
+    for (int i = 0; i < nAssets; i++) {
+        b[i] = 0.0;
+    } // not necessary but maybe i havent initialised the first nAssets elements
     b[nAssets] = -portfolioReturn;
     b[nAssets + 1] = -1;
     return b;
 }
 
-Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanReturns) const {
+Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanReturns) {
 
     Matrix q = Matrix(nAssets + 2, nAssets + 2);
 
@@ -101,12 +97,13 @@ Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanRe
         q.set(nAssets, j, -thisMeanReturn);
         q.set(nAssets + 1, j, -1);
     }
+    q.print();
 
     return q;
 }
 
 
-vector<double> PortfolioOptimiser::calculateX0() const {
+vector<double> PortfolioOptimiser::calculateX0() {
 
     vector<double> x0 = vector<double>(nAssets + 2);
     for (int i = 0; i < nAssets; i++) {

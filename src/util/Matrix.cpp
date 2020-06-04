@@ -25,10 +25,10 @@ Matrix::Matrix(int nRows_, int nCols_) {
 
     nCols = nCols_;
     nRows = nRows_;
-    matrix.resize(nRows);
-
+    matrix.resize(nRows+1); //adding +1 here got rid of the heap buffer overflow
+// allways allocate >=1 more byte than you read
     for (int r = 0; r <= nRows; r++) {
-        matrix[r].resize(nCols);
+        matrix[r].resize(nCols+1); //adding +1 here got rid of the hea buffer overflow
     }
     for (int i = 0; i < nRows; ++i) {
         for (int j = 0; j < nCols; ++j) {

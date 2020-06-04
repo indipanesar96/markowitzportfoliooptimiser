@@ -9,9 +9,9 @@ using namespace std;
 
 class Matrix {
 private:
-    int nRows;
-    int nCols;
-    vector<vector<double>> matrix;
+    int nRows {};
+    int nCols {};
+    vector<vector<double>> matrix {};
     // to store rows and then columns
     // matrix = <<a11, a12, a13>, <a21, a22, a23>> for a 2x3 matrix
     // assets is columns, rows are days: C_ij = ith asseth, jth day
