@@ -2,7 +2,7 @@
 #ifndef MARKOWITZPORTFOLIOOPTIMISER_PARAMETERESTIMATOR_H
 #define MARKOWITZPORTFOLIOOPTIMISER_PARAMETERESTIMATOR_H
 #include<vector>
-#include"util/Matrix.h"
+#include"../util/Matrix.h"
 
 class ParameterEstimator{
 public:

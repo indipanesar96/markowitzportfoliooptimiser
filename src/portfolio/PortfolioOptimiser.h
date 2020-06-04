@@ -2,7 +2,7 @@
 #define MARKOWITZPORTFOLIOOPTIMISER_PORTFOLIOOPTIMISER_H
 
 #include <vector>
-#include "util/Matrix.h"
+#include "../util/Matrix.h"
 
 class PortfolioOptimiser {
 private:

@@ -10,18 +10,18 @@ set(CMAKE_CXX_STANDARD 14)
 set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address -g3")
 set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address -g3")
 set(SOURCE_FILES
-        src/util/csv.cpp
-        src/DataRepository.cpp
+        src/repository/csv.cpp
+        src/repository/DataRepository.cpp
         src/main.cpp
         src/util/Matrix.cpp
-        src/ParameterEstimator.cpp
-        src/ParameterEstimator.h
-        src/PortfolioOptimiser.cpp
-        src/PortfolioOptimiser.h
+        src/parameterestimator/ParameterEstimator.cpp
+        src/parameterestimator/ParameterEstimator.h
+        src/portfolio/PortfolioOptimiser.cpp
+        src/portfolio/PortfolioOptimiser.h
         src/util/VectorUtil.cpp
         src/util/VectorUtil.h
-        src/Portfolio.cpp
-        src/Portfolio.h
+        src/portfolio/Portfolio.cpp
+        src/portfolio/Portfolio.h
         src/util/RunConfig.h)
 
 

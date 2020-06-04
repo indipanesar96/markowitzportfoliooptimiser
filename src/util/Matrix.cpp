@@ -1,8 +1,8 @@
 #include <cstdlib>
 #include <sstream>
-#include "csv.h"
+#include "../repository/csv.h"
 #include <vector>
-#include "../DataRepository.h"
+#include "../repository/DataRepository.h"
 #include "Matrix.h"
 
 #include <stdexcept>

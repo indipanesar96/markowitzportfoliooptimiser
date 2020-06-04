@@ -1,8 +1,8 @@
 
 #include <fstream>
-#include "util/csv.h"
+#include "csv.h"
 #include "DataRepository.h"
-#include "util/Matrix.h"
+#include "../util/Matrix.h"
 
 using namespace std;
 

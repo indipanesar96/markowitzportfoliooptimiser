@@ -1,10 +1,10 @@
 #include "Backtester.h"
-#include "util/Matrix.h"
-#include "util/RunConfig.h"
-#include "DataRepository.h"
-#include "PortfolioOptimiser.h"
-#include "ParameterEstimator.h"
-#include "Portfolio.h"
+#include "../util/Matrix.h"
+#include "../util/RunConfig.h"
+#include "../repository/DataRepository.h"
+#include "../portfolio/PortfolioOptimiser.h"
+#include "../parameterestimator/ParameterEstimator.h"
+#include "../portfolio/Portfolio.h"
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -30,7 +30,7 @@ int Backtester::run(RunConfig config) {
     int bWindowLength = 5; //days
     int tWindowLength = 2; //days
 
-    int bTestStart = 0;
+    int bTestStart = 100;
     int bTestEnd = config.nDays;
 //    std::copy(col.begin(), col.end(), std::ostream_iterator<char>(cout, " "));
     int day = 0;

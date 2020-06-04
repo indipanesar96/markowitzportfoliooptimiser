@@ -2,7 +2,7 @@
 #define MARKOWITZPORTFOLIOOPTIMISER_PORTFOLIO_H
 
 #include <vector>
-#include "util/VectorUtil.h"
+#include "../util/VectorUtil.h"
 #include <iostream>
 
 class Portfolio {

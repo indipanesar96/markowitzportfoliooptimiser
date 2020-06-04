@@ -2,7 +2,7 @@
 #include <numeric>
 #include <cmath>
 #include "PortfolioOptimiser.h"
-#include "util/VectorUtil.h"
+#include "../util/VectorUtil.h"
 
 using namespace std;
 

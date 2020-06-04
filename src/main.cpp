@@ -1,5 +1,5 @@
 #include <sstream>
-#include "Backtester.cpp"
+#include "backtest/Backtester.cpp"
 #include "util/RunConfig.h"
 
 int main(int argc, char *argv[]) {
@@ -9,8 +9,8 @@ int main(int argc, char *argv[]) {
 
     Backtester b;
 //    b.run(small);
-    b.run(medium);
-//    b.run(large);
+//    b.run(medium);
+    b.run(large);
 
     return 0;
 }
