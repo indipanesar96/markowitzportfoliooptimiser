@@ -18,7 +18,6 @@ vector<double> PortfolioOptimiser::calculateWeights
     vector<double> something = this->conjugateGradientMethod(&Q, &X0, &B);
 
 
-
     return something;
 }
 
@@ -29,7 +28,6 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
     vector<double> sK = vectorSubtract(B, &QX0);
 
     double sumSquaredError = inner_product(begin(sK), end(sK), begin(sK), 0.0);
-    cout << "Initial sumSquaredError: " << sumSquaredError << endl;
 
     vector<double> pK = sK;
     vector<double> xK = *X0;
@@ -62,10 +60,7 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
             exit(1);
         }
     }
-    cout << "Done, this is x: " << endl;
-    print(&xK);
-
-    return xK;
+    return vector<double>(xK.begin(), xK.end() - 2);
 }
 
 vector<double> PortfolioOptimiser::generateB() {

@@ -1,5 +1,6 @@
 #include "Backtester.h"
 #include "util/Matrix.h"
+#include "util/RunConfig.h"
 #include "DataRepository.h"
 #include "PortfolioOptimiser.h"
 #include "ParameterEstimator.h"
@@ -8,13 +9,18 @@
 #include <cmath>
 #include <vector>
 
-int Backtester::run(string filename, int nAssets, int nDays) {
+int Backtester::run(RunConfig config) {
     // assets is columns, rows are days: C_ij = ith asseth, jth day
-    Matrix all_returns = Matrix(nDays, nAssets);
 
-    DataRepository(filename, nAssets, nDays).readData(&all_returns);
+    Matrix all_returns = Matrix(config.nDays, config.nAssets);
+
+    DataRepository(config.fileName).readData(&all_returns);
     ParameterEstimator estimator = ParameterEstimator();
-    PortfolioOptimiser optimiser = PortfolioOptimiser(pow(10, -6), 0.5, 0.5, all_returns.getNCols());
+
+    PortfolioOptimiser optimiser = PortfolioOptimiser(config.EPSILON,
+                                                      config.initialLambda,
+                                                      config.initialMu,
+                                                      config.nAssets);
     Portfolio portfolio = Portfolio();
 
     // for initial testing, ideally we should pass this in from main
@@ -25,16 +31,16 @@ int Backtester::run(string filename, int nAssets, int nDays) {
     int tWindowLength = 2; //days
 
     int bTestStart = 0;
-    int bTestEnd = nDays;
+    int bTestEnd = config.nDays;
 //    std::copy(col.begin(), col.end(), std::ostream_iterator<char>(cout, " "));
-    int day=0;
-    while (day < bTestEnd){
+    int day = 0;
+    while (day < bTestEnd) {
 
         Matrix firstWindow = all_returns.get(
                 bTestStart,
                 bTestStart + bWindowLength,
                 0,
-                nAssets);
+                config.nAssets);
 
         vector<double> meanReturns = estimator.estimateMeanReturns(&firstWindow);
 
@@ -42,11 +48,10 @@ int Backtester::run(string filename, int nAssets, int nDays) {
 
         vector<double> portfolioWeights = optimiser.calculateWeights(&cov, &meanReturns);
 
-        cout <<"backltester"<<endl;
+        cout << "backtester" << endl;
         print(&portfolioWeights);
 
         portfolio.addWeightsToHistory(portfolioWeights);
-
 
 
         exit(1);

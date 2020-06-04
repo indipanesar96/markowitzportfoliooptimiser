@@ -10,6 +10,7 @@ private:
     vector <vector<double>> weightsHistory {};
 public:
     void addWeightsToHistory(vector<double> weights);
+
 };
 
 

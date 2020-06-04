@@ -1,14 +1,14 @@
 
 #ifndef MARKOWITZPORTFOLIOOPTIMISER_BACKTESTER_H
 #define MARKOWITZPORTFOLIOOPTIMISER_BACKTESTER_H
-#include <sstream>
+#include "util/RunConfig.h"
 
 using namespace std;
 
 class Backtester {
 
 public:
-    int run(string filename, int nAssets, int nDays);
+    int run(RunConfig config);
 
 };
 
