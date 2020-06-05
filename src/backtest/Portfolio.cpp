@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void Portfolio::addWeightsToHistory(vector<double> weights) {
+void Portfolio::addWeightsToHistory(vector<double> &weights) {
     this->weightsHistory.push_back(weights);
 }
 
@@ -17,6 +17,9 @@ Portfolio::Portfolio(RunConfig config_) {
 
     DataRepository(config_.fileName).readData(&allReturns);
     estimator = ParameterEstimator();
+
+    tWindowLength = config_.tWindowLength;
+    bWindowLength = config_.bWindowLength;
 
     optimiser = PortfolioOptimiser(config_.EPSILON,
                                    config_.initialLambda,
@@ -30,11 +33,8 @@ int Portfolio::run(double dailyReturn) {
 
     optimiser.setTargetDailyReturn(dailyReturn);
 
-    int bWindowLength = 100; //days
-    int tWindowLength = 12; //days
-
-    bool printIndices = false;
-    for (int day = 0; day + bWindowLength + tWindowLength -1  < config.nDays; day += 12) {
+    bool printIndices = true;
+    for (int day = 0; day + bWindowLength + tWindowLength - 1 < config.nDays; day += 12) {
 
 //        first window
 //        portfolio.balance(returns[0:99])
@@ -61,20 +61,20 @@ int Portfolio::run(double dailyReturn) {
                 0,
                 config.nAssets);
 
-        if (printIndices){
+        if (printIndices) {
 
+            cout << endl;
             cout << day << endl;
             cout << "bStart: " << bStart << " bEnd: " << bEnd << endl;
             cout << "tStart: " << tStart << " tEnd: " << tEnd << endl;
-            cout << endl;
         }
 
 
-//        vector<double> portfolioWeights = this->balance(&balanceWindow);
-//        int something = this->evaluate(&testWindow, &portfolioWeights);
+        vector<double> portfolioWeights = this->balance(&balanceWindow);
+        int something = this->evaluate(&testWindow, &portfolioWeights);
 
 
-        if (day==12){
+        if (day == 7000) {
 
             cout << "done" << endl;
             exit(10);
@@ -93,15 +93,15 @@ vector<double> Portfolio::balance(Matrix *m) {
     vector<double> meanReturns = estimator.estimateMeanReturns(m);
     Matrix cov = estimator.estimateCovariances(m, &meanReturns);
     vector<double> weights = optimiser.calculateWeights(&cov, &meanReturns);
-    this->checkWeights(&weights);
+    this->checkWeights(weights);
     this->addWeightsToHistory(weights);
     return weights;
 
 }
 
-void Portfolio::checkWeights(vector<double> *w) {
+void Portfolio::checkWeights(vector<double> &w) {
 
-    long sum = accumulate(w->begin(), w->end(), 0.0);
+    long sum = accumulate(w.begin(), w.end(), 0.0);
     cout << "The sum of the weights is: " << sum << endl;
 
     if (sum != 1) {

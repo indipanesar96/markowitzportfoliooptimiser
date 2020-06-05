@@ -14,22 +14,27 @@ using namespace std;
 class Portfolio {
 private:
     vector<vector<double>> weightsHistory;
+
     vector<double> balance(Matrix *m);
-    int evaluate(Matrix *m, vector<double>* weights);
-    void checkWeights(vector<double> * w);
+
+    int evaluate(Matrix *m, vector<double> *weights);
+
+    void checkWeights(vector<double> &w);
+
+    void addWeightsToHistory(vector<double> &weights);
 
 
 public:
     int run(double dailyReturn);
 
     explicit Portfolio(RunConfig config_);
-    void addWeightsToHistory(vector<double> weights);
 
     Matrix allReturns = Matrix(1, 1);
-    RunConfig config = RunConfig(0.5, 0.5, 1, 1, "");
+    RunConfig config = RunConfig(0.5, 0.5, 1, 1, -1, -1,"" );
     ParameterEstimator estimator = ParameterEstimator();
     PortfolioOptimiser optimiser = PortfolioOptimiser(1, 1, 1, 1, 1);
-
+    int tWindowLength =0;
+    int bWindowLength =0;
     // default vals
 };
 

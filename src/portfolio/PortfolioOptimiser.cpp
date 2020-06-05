@@ -17,7 +17,6 @@ vector<double> PortfolioOptimiser::calculateWeights
 
     vector<double> something = this->conjugateGradientMethod(&Q, &X0, &B);
 
-
     return something;
 }
 
@@ -90,8 +89,6 @@ Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanRe
         q.set(nAssets, j, -thisMeanReturn);
         q.set(nAssets + 1, j, -1);
     }
-    q.print();
-
     return q;
 }
 
