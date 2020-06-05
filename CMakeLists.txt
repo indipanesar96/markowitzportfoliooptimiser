@@ -20,8 +20,6 @@ set(SOURCE_FILES
         src/portfolio/PortfolioOptimiser.h
         src/util/VectorUtil.cpp
         src/util/VectorUtil.h
-        src/portfolio/Portfolio.cpp
-        src/portfolio/Portfolio.h
         src/util/RunConfig.h)
 
 

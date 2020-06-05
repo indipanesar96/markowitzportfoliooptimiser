@@ -1,4 +1,4 @@
-#include "backtest/Backtester.cpp"
+#include "backtest/Portfolio.cpp"
 #include "util/RunConfig.h"
 
 int main(int argc, char *argv[]) {
@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
     RunConfig large = RunConfig(0.5, 0.5, 700, 83, "../resources/asset_returns.csv");
 
     double targetReturn = 0.0001;
-    Backtester b(large);
+    Portfolio b(large);
 //    b.run(small, targetReturn);
 //    b.run(medium, targetReturn);
     b.run(targetReturn);
