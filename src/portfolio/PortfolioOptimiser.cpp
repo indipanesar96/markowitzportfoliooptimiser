@@ -26,7 +26,7 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
     vector<double> QX0 = Q->multiplyVector(X0);
     vector<double> sK = vectorSubtract(B, &QX0);
 
-    double sumSquaredError = inner_product(begin(sK), end(sK), begin(sK), 0.0);
+    double sumSquaredError = innerProduct(&sK, &sK);
 
     vector<double> pK = sK;
     vector<double> xK = *X0;
@@ -51,7 +51,7 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         sumSquaredError = newSumSquaredError;
         counter++;
-        if (counter == Q->getNRows()) {
+        if (counter == Q->getNRows() + 1) {
             cout << "Something has gone wrong, conjugate gradient should've converged by now.." << endl;
             cout << "\t Error: " << sumSquaredError << endl;
             exit(1);
@@ -60,18 +60,18 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
     return vector<double>(xK.begin(), xK.end() - 2);
 }
 
-vector<double> PortfolioOptimiser::generateB() {
+vector<double> PortfolioOptimiser::generateB() const {
 
     vector<double> b = vector<double>(nAssets + 2);
     for (int i = 0; i < nAssets; i++) {
         b[i] = 0.0;
     } // not necessary but maybe i havent initialised the first nAssets elements
-    b[nAssets] = -portfolioReturn;
+    b[nAssets] = -targetReturn;
     b[nAssets + 1] = -1;
     return b;
 }
 
-Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanReturns) {
+Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanReturns) const {
 
     Matrix q = Matrix(nAssets + 2, nAssets + 2);
 

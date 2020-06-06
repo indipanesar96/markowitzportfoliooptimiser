@@ -1,20 +1,36 @@
 
 #include "ParameterEstimator.h"
 #include <numeric>
+#include <cmath>
 
-vector<double> ParameterEstimator::estimateMeanReturns(Matrix *m) {
+vector<double> ParameterEstimator::estimateMultipleMeans(Matrix *m) {
 
     int nCols = m->getNCols();
-    int nRows = m->getNRows();
     vector<double> means = vector<double>(nCols);
 
     for (int i = 0; i < nCols; i++) {
         vector<double> column = m->getCol(i);
-        double sum = accumulate(column.begin(), column.end(), 0.0);
-        means[i] = sum / nRows;
+        means[i] = calculateMean(&column);
     }
 
     return means;
+}
+
+double ParameterEstimator::calculateMean(vector<double> *values) {
+    return accumulate(values->begin(), values->end(), 0.0) / values->size();
+}
+
+double ParameterEstimator::calculateStd(vector<double> *vals) {
+
+    int s = vals->size();
+    double mean = calculateMean(vals);
+    double var = 0.0;
+
+    for (double elem: *vals) {
+        var += pow((elem - mean), 2) / (s - 1);
+    }
+
+    return pow(var, 0.5);
 }
 
 Matrix ParameterEstimator::estimateCovariances

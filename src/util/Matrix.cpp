@@ -14,25 +14,25 @@ Matrix::Matrix(int nRows_, int nCols_) {
 
     if (nRows_ < 1) {
 //        throw invalid_argument("nRows of matrix must be >1 !");
-        cout << "nRows of matrix must be >1 !" << endl;
+        cout << "nRows of matrix must be >= 1!" << endl;
         exit(1); // this is suboptimal - no destructors called
     }
     if (nCols_ < 1) {
 //        throw invalid_argument("nCols of matrix must be >1 !");
-        cout << "nCols of matrix must be >1 !" << endl;
+        cout << "nCols of matrix must be >= 1!" << endl;
         exit(1); // this is suboptimal - no destructors called
     }
 
     nCols = nCols_;
     nRows = nRows_;
-    matrix.resize(nRows+1); //adding +1 here got rid of the heap buffer overflow
+    matrix.resize(nRows + 1); //adding +1 here got rid of the heap buffer overflow
 // allways allocate >=1 more byte than you read
     for (int r = 0; r <= nRows; r++) {
-        matrix[r].resize(nCols+1); //adding +1 here got rid of the hea buffer overflow
+        matrix[r].resize(nCols + 1); //adding +1 here got rid of the hea buffer overflow
     }
-    for (int i = 0; i < nRows; ++i) {
-        for (int j = 0; j < nCols; ++j) {
-            matrix[i][j] = 0.0;
+    for (int r = 0; r < nRows; ++r) {
+        for (int c = 0; c < nCols; ++c) {
+            matrix[r][c] = 0.0;
         }
     }
 }
@@ -61,19 +61,14 @@ void Matrix::checkInputRowColDimensions(int inputNRows, int inputNCols) const {
 vector<double> Matrix::multiplyVector(vector<double> *vec) {
     // checker : https://matrix.reshish.com/multiplication.php
 
+    checkDimsForMultiplication(vec->size());
 
-    int finalLength = vec->size();
-
-    checkDimsForMultiplication(finalLength);
-
-    vector<double> result = vector<double>(finalLength);
+    vector<double> result = vector<double>(nRows);
 
     for (int r = 0; r < nRows; r++) {
-        double temp = 0.0;
         for (int c = 0; c < nCols; c++) {
-            temp += matrix[r][c] * vec->at(c);
+            result[r] += matrix[r][c] * vec->at(c);
         }
-        result.at(r) = temp;
     }
     return result;
 }
@@ -151,7 +146,7 @@ Matrix Matrix::add(Matrix *B) {
 }
 
 void Matrix::checkDimsForMultiplication(int bRows) const {
-    // first matrix for multiplication is always self
+    // first matrix for multiplication is always this
     // ie A.multiply(B), then nCols is the number of columns in A
     if (nCols != bRows) {
         cout << "Matrix A cols must = matrix B rows:" <<
@@ -261,5 +256,3 @@ Matrix Matrix::get(int rowStart, int rowEnd, int colStart, int colEnd) {
 Matrix Matrix::getAllCols(int rowStart, int rowEnd) {
     return this->get(rowStart, rowEnd, 0, nCols);
 }
-
-

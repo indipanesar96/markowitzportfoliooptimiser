@@ -24,16 +24,16 @@ int main(int argc, char *argv[]) {
                                 100,
                                 "../resources/asset_returns.csv");
 
-    Portfolio b(large);
+    Portfolio b = Portfolio(large);
 
-    double start = 0.0;
-    double end = 0.1;
     int n = 21;
 
+    cout << "Target Return,\t IS Return,\t IS Std,\t OOS Return,\t OOS Std" << endl;
     for (int i = 0; i < n; i++) {
-        double targetRet = start + i * 0.005;
-        double actual = b.run(targetRet);
-        cout << "Target: " << targetRet << " Actual: " << actual << endl;
+        double targetRet = i * 0.005;
+        Results results = b.run(targetRet);
+        cout << targetRet << ",\t " << results.retIS << ",\t " << results.stdIS
+             << ",\t " << results.retOOS << ",\t " << results.stdOOS << endl;
     }
 
 

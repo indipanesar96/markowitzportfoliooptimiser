@@ -9,15 +9,15 @@ private:
     double EPSILON;
     double initialLambda;
     double initialMu;
-    double portfolioReturn{};
+    double targetReturn{};
     int nAssets;
     int nDays;
 
     vector<double> calculateX0();
 
-    vector<double> generateB();
+    vector<double> generateB() const;
 
-    Matrix generateQ(Matrix *covariances, vector<double> *meanReturns);
+    Matrix generateQ(Matrix *covariances, vector<double> *meanReturns) const;
 
     vector<double> conjugateGradientMethod(Matrix *Q, vector<double> *X0, vector<double> *B);
 
@@ -36,7 +36,7 @@ public:
     }
 
     void setTargetDailyReturn(double portfolioReturn_) {
-        portfolioReturn = portfolioReturn_;
+        targetReturn = portfolioReturn_;
     }
 
     vector<double> calculateWeights(Matrix *covariances,

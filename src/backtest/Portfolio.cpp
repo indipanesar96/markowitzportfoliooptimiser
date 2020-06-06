@@ -3,9 +3,9 @@
 #include <cmath>
 #include <vector>
 #include <numeric>
-#include "../util/VectorUtil.h"
 
 using namespace std;
+
 
 void Portfolio::addWeightsToHistory(vector<double> &weights) {
     this->weightsHistory.push_back(weights);
@@ -16,7 +16,6 @@ Portfolio::Portfolio(RunConfig config_) {
     allReturns = Matrix(config_.nDays, config_.nAssets);
 
     DataRepository(config_.fileName).readData(&allReturns);
-    estimator = ParameterEstimator();
 
     tWindowLength = config_.tWindowLength;
     bWindowLength = config_.bWindowLength;
@@ -29,7 +28,7 @@ Portfolio::Portfolio(RunConfig config_) {
                                    config_.nDays);
 }
 
-double Portfolio::run(double dailyReturn) {
+Results Portfolio::run(double dailyReturn) {
     // assets is columns, rows are days: C_ij = ith asset, jth day
 
     optimiser.setTargetDailyReturn(dailyReturn);
@@ -37,7 +36,6 @@ double Portfolio::run(double dailyReturn) {
     vector<double> portReturnsOOS = vector<double>(nWindows);
     vector<double> portReturnsIS = vector<double>(nWindows);
     int currentWindow = 0;
-
 
     for (int day = 0; day + bWindowLength + tWindowLength - 1 < config.nDays; day += 12) {
 
@@ -49,13 +47,6 @@ double Portfolio::run(double dailyReturn) {
         Matrix balanceWindow = allReturns.getAllCols(bStart, bEnd);
         Matrix testWindow = allReturns.getAllCols(tStart, tEnd);
 
-        if (false) {
-            cout << endl;
-            cout << day << endl;
-            cout << "bStart: " << bStart << " bEnd: " << bEnd << endl;
-            cout << "tStart: " << tStart << " tEnd: " << tEnd << endl;
-        }
-
         vector<double> portfolioWeights = this->balance(&balanceWindow);
 
         portReturnsOOS[currentWindow] = this->evaluate(&testWindow, &portfolioWeights);
@@ -64,15 +55,19 @@ double Portfolio::run(double dailyReturn) {
         currentWindow += 1;
     }
 
-    double avePortReturn = accumulate(portReturnsOOS.begin(), portReturnsOOS.end(), 0.0) / nWindows;
+    double avePortReturnOOS = ParameterEstimator::calculateMean(&portReturnsOOS);
+    double avePortReturnIS = ParameterEstimator::calculateMean(&portReturnsIS);
 
-    double avePortReturnInSample = accumulate(portReturnsIS.begin(), portReturnsIS.end(), 0.0) / nWindows;
-    return avePortReturn;
+    double stdOOS = ParameterEstimator::calculateStd(&portReturnsOOS);
+    double stdIS = ParameterEstimator::calculateStd(&portReturnsIS);
+
+
+    return Results{avePortReturnOOS, avePortReturnIS, stdOOS, stdIS};
 }
 
-double Portfolio::evaluate(Matrix *m, vector<double> *weights) {
+double Portfolio::evaluate(Matrix *m, vector<double> *weights) const {
 
-    vector<double> aveAssetReturns = estimator.estimateMeanReturns(m);
+    vector<double> aveAssetReturns = ParameterEstimator::estimateMultipleMeans(m);
 
     double portReturn = 0;
     for (int asset = 0; asset < config.nAssets; asset++) {
@@ -83,8 +78,9 @@ double Portfolio::evaluate(Matrix *m, vector<double> *weights) {
 
 
 vector<double> Portfolio::balance(Matrix *m) {
-    vector<double> meanReturns = estimator.estimateMeanReturns(m);
-    Matrix cov = estimator.estimateCovariances(m, &meanReturns);
+    vector<double> meanReturns = ParameterEstimator::estimateMultipleMeans(m);
+    Matrix cov = ParameterEstimator::estimateCovariances(m, &meanReturns);
+
     vector<double> weights = optimiser.calculateWeights(&cov, &meanReturns);
     this->checkWeights(weights);
     this->addWeightsToHistory(weights);
