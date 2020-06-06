@@ -20,6 +20,7 @@ Portfolio::Portfolio(RunConfig config_) {
 
     tWindowLength = config_.tWindowLength;
     bWindowLength = config_.bWindowLength;
+    nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength;
 
     optimiser = PortfolioOptimiser(config_.EPSILON,
                                    config_.initialLambda,
@@ -28,64 +29,56 @@ Portfolio::Portfolio(RunConfig config_) {
                                    config_.nDays);
 }
 
-int Portfolio::run(double dailyReturn) {
+double Portfolio::run(double dailyReturn) {
     // assets is columns, rows are days: C_ij = ith asset, jth day
 
     optimiser.setTargetDailyReturn(dailyReturn);
 
-    bool printIndices = true;
+    vector<double> portReturnsOOS = vector<double>(nWindows);
+    vector<double> portReturnsIS = vector<double>(nWindows);
+    int currentWindow = 0;
+
+
     for (int day = 0; day + bWindowLength + tWindowLength - 1 < config.nDays; day += 12) {
 
-//        first window
-//        portfolio.balance(returns[0:99])
-//        portfolio.backtest(returns[100:111])
-//
-//        second window
-//        portfolio.balance(returns[12:111])
-//        portfolio.backtest(returns[112:123])
-
         int bStart = day;
-        int bEnd = day + bWindowLength - 1;
+        int bEnd = day + bWindowLength; // end not inclusive
         int tStart = day + bWindowLength;
-        int tEnd = day + bWindowLength + tWindowLength - 1;
+        int tEnd = day + bWindowLength + tWindowLength; // end not inclusive
 
-        Matrix balanceWindow = allReturns.get(
-                bStart,
-                bEnd,
-                0,
-                config.nAssets);
+        Matrix balanceWindow = allReturns.getAllCols(bStart, bEnd);
+        Matrix testWindow = allReturns.getAllCols(tStart, tEnd);
 
-        Matrix testWindow = allReturns.get(
-                tStart,
-                tEnd,
-                0,
-                config.nAssets);
-
-        if (printIndices) {
-
+        if (false) {
             cout << endl;
             cout << day << endl;
             cout << "bStart: " << bStart << " bEnd: " << bEnd << endl;
             cout << "tStart: " << tStart << " tEnd: " << tEnd << endl;
         }
 
-
         vector<double> portfolioWeights = this->balance(&balanceWindow);
-        int something = this->evaluate(&testWindow, &portfolioWeights);
 
+        portReturnsOOS[currentWindow] = this->evaluate(&testWindow, &portfolioWeights);
+        portReturnsIS[currentWindow] = this->evaluate(&balanceWindow, &portfolioWeights);
 
-        if (day == 7000) {
-
-            cout << "done" << endl;
-            exit(10);
-        }
+        currentWindow += 1;
     }
 
-    return 0;
+    double avePortReturn = accumulate(portReturnsOOS.begin(), portReturnsOOS.end(), 0.0) / nWindows;
+
+    double avePortReturnInSample = accumulate(portReturnsIS.begin(), portReturnsIS.end(), 0.0) / nWindows;
+    return avePortReturn;
 }
 
-int Portfolio::evaluate(Matrix *m, vector<double> *weights) {
-    return 0;
+double Portfolio::evaluate(Matrix *m, vector<double> *weights) {
+
+    vector<double> aveAssetReturns = estimator.estimateMeanReturns(m);
+
+    double portReturn = 0;
+    for (int asset = 0; asset < config.nAssets; asset++) {
+        portReturn += aveAssetReturns[asset] * weights->at(asset);
+    }
+    return portReturn;
 }
 
 
@@ -99,14 +92,22 @@ vector<double> Portfolio::balance(Matrix *m) {
 
 }
 
-void Portfolio::checkWeights(vector<double> &w) {
+void Portfolio::checkWeights(vector<double> &w) const {
 
-    long sum = accumulate(w.begin(), w.end(), 0.0);
-    cout << "The sum of the weights is: " << sum << endl;
+    double sum = accumulate(w.begin(), w.end(), 0.0);
 
-    if (sum != 1) {
+    if (abs(sum - 1.0) > WEIGHTS_TOLERANCE) {
+        cout << "The sum of the weights is: " << sum << endl;
+        cout << "Exiting as weights are incorrect" << endl;
         exit(42);
     }
 
 }
 
+//        first window
+//        portfolio.balance(returns[0:99])
+//        portfolio.backtest(returns[100:111])
+//
+//        second window
+//        portfolio.balance(returns[12:111])
+//        portfolio.backtest(returns[112:123])

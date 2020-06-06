@@ -24,11 +24,18 @@ int main(int argc, char *argv[]) {
                                 100,
                                 "../resources/asset_returns.csv");
 
-    double targetReturn = 0.0001;
     Portfolio b(large);
-//    b.run(small, targetReturn);
-//    b.run(medium, targetReturn);
-    b.run(targetReturn);
+
+    double start = 0.0;
+    double end = 0.1;
+    int n = 21;
+
+    for (int i = 0; i < n; i++) {
+        double targetRet = start + i * 0.005;
+        double actual = b.run(targetRet);
+        cout << "Target: " << targetRet << " Actual: " << actual << endl;
+    }
+
 
     return 0;
 }

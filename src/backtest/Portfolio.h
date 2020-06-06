@@ -17,15 +17,15 @@ private:
 
     vector<double> balance(Matrix *m);
 
-    int evaluate(Matrix *m, vector<double> *weights);
+    double evaluate(Matrix *m, vector<double> *weights);
 
-    void checkWeights(vector<double> &w);
+    void checkWeights(vector<double> &w) const;
 
     void addWeightsToHistory(vector<double> &weights);
 
 
 public:
-    int run(double dailyReturn);
+    double run(double dailyReturn);
 
     explicit Portfolio(RunConfig config_);
 
@@ -35,6 +35,8 @@ public:
     PortfolioOptimiser optimiser = PortfolioOptimiser(1, 1, 1, 1, 1);
     int tWindowLength =0;
     int bWindowLength =0;
+    double WEIGHTS_TOLERANCE = pow(10, -3);
+    int nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength;
     // default vals
 };
 

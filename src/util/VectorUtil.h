@@ -30,7 +30,7 @@ vector<T> vectorSubtract(vector<T> *a, vector<T> *b) {
 
 template<typename T,
         typename = typename enable_if< is_arithmetic<T>::value, T> ::type>
-vector<T> multiplyVector(double aCoeff, vector<T> *a, double bCoeff, vector<T> *b) {
+vector<T> vectorAdditions(double aCoeff, vector<T> *a, double bCoeff, vector<T> *b) {
 
     int aSize = a->size();
     int bSize = b->size();

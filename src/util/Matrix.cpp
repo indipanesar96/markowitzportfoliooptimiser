@@ -258,4 +258,8 @@ Matrix Matrix::get(int rowStart, int rowEnd, int colStart, int colEnd) {
     return res;
 }
 
+Matrix Matrix::getAllCols(int rowStart, int rowEnd) {
+    return this->get(rowStart, rowEnd, 0, nCols);
+}
+
 

@@ -7,8 +7,8 @@
 class ParameterEstimator{
 public:
 
-    vector<double> estimateMeanReturns(Matrix* m);
-    Matrix estimateCovariances(Matrix* m, vector<double>* meanReturns);
+    static vector<double> estimateMeanReturns(Matrix* m);
+    static Matrix estimateCovariances(Matrix* m, vector<double>* meanReturns);
 };
 
 #endif //MARKOWITZPORTFOLIOOPTIMISER_PARAMETERESTIMATOR_H

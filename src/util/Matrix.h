@@ -35,6 +35,7 @@ public:
     double get(int n, int i);
 
     Matrix get(int rowStart, int rowEnd, int colStart, int colEnd);
+    Matrix getAllCols(int rowStart, int rowEnd);
 
     void print();
 

@@ -38,8 +38,8 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         double alpha = sumSquaredError / innerProduct(&pK, &qPK);
 
-        xK = multiplyVector(1.0, &xK, alpha, &pK);
-        sK = multiplyVector(1.0, &sK, -alpha, &qPK);
+        xK = vectorAdditions(1.0, &xK, alpha, &pK);
+        sK = vectorAdditions(1.0, &sK, -alpha, &qPK);
 
         double newSumSquaredError = innerProduct(&sK, &sK);
 
@@ -47,7 +47,7 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         double beta = newSumSquaredError / sumSquaredError;
 
-        pK = multiplyVector(1.0, &sK, beta, &pK);
+        pK = vectorAdditions(1.0, &sK, beta, &pK);
 
         sumSquaredError = newSumSquaredError;
         counter++;
