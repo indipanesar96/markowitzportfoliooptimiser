@@ -3,13 +3,11 @@
 #include <cmath>
 #include <vector>
 #include <numeric>
+#include "../util/VectorUtil.h"
+
 
 using namespace std;
 
-
-void Portfolio::addWeightsToHistory(vector<double> &weights) {
-    this->weightsHistory.push_back(weights);
-}
 
 Portfolio::Portfolio(RunConfig config_) {
     config = config_;
@@ -27,65 +25,63 @@ Portfolio::Portfolio(RunConfig config_) {
 
 Results Portfolio::backtest(double dailyReturn) {
     // assets is columns, rows are days: C_ij = ith asset, jth day
+    //        first window
+    //        this->balance(returns[0:99])
+    //        this->backtest(returns[100:111])
+    //
+    //        second window
+    //        this->balance(returns[12:111])
+    //        this->backtest(returns[112:123])
 
     optimiser.setTargetDailyReturn(dailyReturn);
-
-    int tWindowLength = config.tWindowLength;
-    int bWindowLength = config.bWindowLength;
 
     vector<double> portReturnsOOS = vector<double>(nWindows);
     vector<double> portReturnsIS = vector<double>(nWindows);
 
     int currentWindow = 0;
-    for (int day = 0; day + bWindowLength + tWindowLength - 1 < config.nDays; day += 12) {
+    for (int day = 0;
+         day + config.bWindowLength + config.tWindowLength - 1 < config.nDays;
+         day += 12) {
 
         int bStart = day;
-        int bEnd = day + bWindowLength; // end not inclusive
-        int tStart = day + bWindowLength;
-        int tEnd = day + bWindowLength + tWindowLength; // end not inclusive
+        int bEnd = day + config.bWindowLength; // end not inclusive
+        int tStart = day + config.bWindowLength;
+        int tEnd = day + config.bWindowLength + config.tWindowLength; // end not inclusive
 
         Matrix balanceWindow = allReturns.getAllCols(bStart, bEnd);
         Matrix testWindow = allReturns.getAllCols(tStart, tEnd);
 
         vector<double> portfolioWeights = this->balance(&balanceWindow);
 
-        portReturnsOOS[currentWindow] = this->evaluate(&testWindow, &portfolioWeights);
-        portReturnsIS[currentWindow] = this->evaluate(&balanceWindow, &portfolioWeights);
+        portReturnsOOS[currentWindow] = Portfolio::evaluate(&testWindow, &portfolioWeights);
+        portReturnsIS[currentWindow] = Portfolio::evaluate(&balanceWindow, &portfolioWeights);
 
         currentWindow += 1;
     }
 
-    double avePortReturnOOS = ParameterEstimator::calculateMean(&portReturnsOOS);
-    double avePortReturnIS = ParameterEstimator::calculateMean(&portReturnsIS);
-
-    double stdOOS = ParameterEstimator::calculateStd(&portReturnsOOS);
-    double stdIS = ParameterEstimator::calculateStd(&portReturnsIS);
-
-
-    return Results{avePortReturnOOS, avePortReturnIS, stdOOS, stdIS};
+    return (Results) {
+            ParameterEstimator::calculateMean(&portReturnsOOS), //Mean of portfolio Return across all windows, Out Of Sample
+            ParameterEstimator::calculateMean(&portReturnsIS), //Mean of portfolio Return across all windows, In Sample
+            ParameterEstimator::calculateStd(&portReturnsOOS), //Std of portfolio Return across all windows, Out Of Sample
+            ParameterEstimator::calculateStd(&portReturnsIS) //Std of portfolio Return across all windows, In Sample
+    };
 }
 
-double Portfolio::evaluate(Matrix *m, vector<double> *weights) const {
+double Portfolio::evaluate(Matrix *m, vector<double> *weights) {
 
     vector<double> aveAssetReturns = ParameterEstimator::estimateMultipleMeans(m);
 
-    // could swap with a call to innerProduct
-
-    double portReturn = 0;
-    for (int asset = 0; asset < config.nAssets; asset++) {
-        portReturn += aveAssetReturns[asset] * weights->at(asset);
-    }
-    return portReturn;
+    return innerProduct(&aveAssetReturns, weights);
 }
 
 
 vector<double> Portfolio::balance(Matrix *m) {
     vector<double> meanReturns = ParameterEstimator::estimateMultipleMeans(m);
+
     Matrix cov = ParameterEstimator::estimateCovariances(m, &meanReturns);
 
     vector<double> weights = optimiser.calculateWeights(&cov, &meanReturns);
     this->checkWeights(weights);
-    this->addWeightsToHistory(weights);
     return weights;
 
 }
@@ -101,11 +97,3 @@ void Portfolio::checkWeights(vector<double> &w) const {
     }
 
 }
-
-//        first window
-//        optimiser.balance(returns[0:99])
-//        optimiser.backtest(returns[100:111])
-//
-//        second window
-//        optimiser.balance(returns[12:111])
-//        optimiser.backtest(returns[112:123])

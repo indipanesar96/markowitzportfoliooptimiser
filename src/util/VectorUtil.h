@@ -56,7 +56,7 @@ T innerProduct(vector<T> *a, vector<T> *b) {
     if (aSize != bSize) {
         cout << "Vectors aren't the same size and so cannot be subtracted from one another." << endl;
         cout << "\t sizes: " << aSize << " and " << bSize;
-        exit(1);
+        exit(37);
     }
     return inner_product(begin(*a), end(*a), begin(*b), 0.0);
 }

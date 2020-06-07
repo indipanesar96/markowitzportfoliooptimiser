@@ -15,16 +15,11 @@ using namespace std;
 
 class Portfolio {
 private:
-    vector<vector<double>> weightsHistory;
-
     vector<double> balance(Matrix *m);
 
-    double evaluate(Matrix *m, vector<double> *weights) const;
+    static double evaluate(Matrix *m, vector<double> *weights) ;
 
     void checkWeights(vector<double> &w) const;
-
-    void addWeightsToHistory(vector<double> &weights);
-
 
 public:
     Results backtest(double dailyReturn);

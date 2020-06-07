@@ -33,6 +33,7 @@ double ParameterEstimator::calculateStd(vector<double> *vals) {
     return pow(var, 0.5);
 }
 
+
 Matrix ParameterEstimator::estimateCovariances
         (Matrix *m, vector<double> *meanReturns) {
 
@@ -44,7 +45,9 @@ Matrix ParameterEstimator::estimateCovariances
     for (int a1 = 0; a1 < nAssets; a1++) {
         double a1mean = meanReturns->at(a1);
 
-        for (int a2 = 0; a2 < nAssets; a2++) {
+        // only calculating values for the lower triangle of the matrix and
+        // using the fact that it's symmetric
+        for (int a2 = 0; a2 <= a1; a2++) {
             double a2mean = meanReturns->at(a2);
             double temp = 0.0;
 
@@ -52,6 +55,7 @@ Matrix ParameterEstimator::estimateCovariances
                 temp += (m->get(day, a1) - a1mean) * (m->get(day, a2) - a2mean);
             }
             covariances.set(a1, a2, (temp / (nDays - 1)));
+            covariances.set(a2, a1, (temp / (nDays - 1)));
         }
     }
 
