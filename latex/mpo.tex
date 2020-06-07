@@ -32,6 +32,7 @@ MENTION CAPM BUTCAPM SAYS YOURE REWARDED PROPORTIONAL TO HOW MUCH NON-DIVERSIFIA
 
 \subsection{Theory}
 \label{sec:theory}
+REMEMBER TO CITE THE NOTES
 
 As aforementioned, we employ Lagrange Multipliers to constrain the portfolio problem, allowing us to adhere to real-world constraints whilst also seeking to minimise the variance of the portfolio.
 
@@ -164,6 +165,8 @@ The same philosophy was behind the use of the \textit{Results} struct as a retur
 I found this line of reasoning to be especially pertinent with method signatures since their readability contributes massively to the readability of the application as a whole.  
 
 
+TALK ABOUT GENERIC TYPES USED IN VECTORUTIL
+
 \subsubsection{Repository}
 \label{sec:repository}
 
@@ -187,18 +190,37 @@ In addition, a getter and setter are employed to set the target return for the o
 
 The Backtest directory is where the \textit{Portfolio} class, header and \textit{main.cpp} were stored. The \textit{main.cpp} acted as the entry into the application; where the \textit{RunConfig}s were initialised and sent to the aforementioned \textit{Portfolio::backtest()} method.
 
+TALK MORE ABOUT THIS
+
+TALK THROUGH THE FLOW OF THE CODE FROM START TO QUADRATIC CONJUGATE METHOD
 
 
 \subsection{Quadratic Conjugate Method}
 \label{sec:qcm}
 
 
+FLOW CHART ALGO DIAGRAM
+
 \section{Results \& Discussion}
 \label{sec:results}
+
+BASICALLY TABLE THAT ALREADY GETS PRINTED OUT
+
+EFFICIENT FRONTIER PLOT
+
+TIME TAKEN TO RUN THE SCRIPT
+
+EXPLAIN WHY STANDARD DEVS GETHIGHER AS RETURNS GET HIGHER - BECASUE WE CANT SEE IT IN THE DATA 9SINCE EXCESSIVELY LARGE RETURNS ARE LESS COMMON) -> MORE NOISE AND ERATICISM IN WEIGHTS PRODUCTION 
+
+METHOD TENDS TO A LIMIT WHERE IT CANT PROCURE MORE RETURN SIMPLY BECAUE PORT RETURN IS WEIGHTS . RETURNS SO PORT RETURN IS LIMITED TO AT BEST, THE SAME RETURN AS THE BEST ASSET SEEN IN THE MARKET. (NO SHORT SELLING) - MAKE UP A SCENARIO WHERE WE SEE IT SHORT SELL A STOCK WITH A NEGATIVE RETURN --> METHOD WORKS
 
 
 \section{Conclusions}
 \label{sec:concs}
+
+
+DECENT WAY TO OPTIMISE GIVEN HOW FAST CONVERGENCE IS
+
 
 
 

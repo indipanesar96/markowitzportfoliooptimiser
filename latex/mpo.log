@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.6.7)  8 JUN 2020 00:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.6.7)  8 JUN 2020 00:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -376,15 +376,15 @@ RAPH
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 221.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 243.
  [3]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 221.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 243.
  (./mpo.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 221.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 221.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 243.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 243.
 Package rerunfilecheck Info: File `mpo.out' has not changed.
 (rerunfilecheck)             Checksum: 77C0E849CE54ADC53DA5775516199EDD;768.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 221.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 243.
  ) 
 Here is how much of TeX's memory you used:
  6431 strings out of 481239
@@ -406,7 +406,7 @@ ic/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.
 pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on mpo.pdf (3 pages, 156313 bytes).
+Output written on mpo.pdf (3 pages, 158240 bytes).
 PDF statistics:
  151 PDF objects out of 1000 (max. 8388607)
  131 compressed objects within 2 object streams
