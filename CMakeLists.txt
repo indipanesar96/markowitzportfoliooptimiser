@@ -12,12 +12,12 @@ set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-point
 set(SOURCE_FILES
         src/repository/csv.cpp
         src/repository/DataRepository.cpp
-        src/main.cpp
+        src/backtest/main.cpp
         src/util/Matrix.cpp
-        src/parameterestimator/ParameterEstimator.cpp
-        src/parameterestimator/ParameterEstimator.h
-        src/portfolio/PortfolioOptimiser.cpp
-        src/portfolio/PortfolioOptimiser.h
+        src/estimator/ParameterEstimator.cpp
+        src/estimator/ParameterEstimator.h
+        src/optimiser/PortfolioOptimiser.cpp
+        src/optimiser/PortfolioOptimiser.h
         src/util/VectorUtil.cpp
         src/util/VectorUtil.h
         src/util/RunConfig.h src/util/Results.h)

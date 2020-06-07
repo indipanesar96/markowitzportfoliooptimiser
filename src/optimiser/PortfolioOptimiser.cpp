@@ -98,7 +98,7 @@ vector<double> PortfolioOptimiser::calculateX0() {
     vector<double> x0 = vector<double>(nAssets + 2);
     for (int i = 0; i < nAssets; i++) {
         // initialising weights
-        // first guess is an equally weighted portfolio
+        // first guess is an equally weighted optimiser
         x0[i] = 1.0 / nAssets;
     }
     x0[nAssets] = initialLambda;

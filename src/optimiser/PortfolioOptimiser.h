@@ -11,7 +11,6 @@ private:
     double initialMu;
     double targetReturn{};
     int nAssets;
-    int nDays;
 
     vector<double> calculateX0();
 
@@ -23,16 +22,11 @@ private:
 
 
 public:
-    PortfolioOptimiser(double epsilon_,
-                       double initialLambda_,
-                       double initialMu_,
-                       int nAssets_,
-                       int nDays_) {
+    PortfolioOptimiser(double epsilon_, double initialLambda_, double initialMu_, int nAssets_) {
         EPSILON = epsilon_;
         initialLambda = initialLambda_;
         initialMu = initialMu_;
         nAssets = nAssets_;
-        nDays = nDays_;
     }
 
     void setTargetDailyReturn(double portfolioReturn_) {

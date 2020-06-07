@@ -147,7 +147,7 @@ With Equations (\ref{target_return_constraint}) and (\ref{weights_constraint}) a
 \label{sec:implementation_code}
 
 
-With a distinct focus on code readability, maintainability and efficiency, the backtesting frameworks, Quadratic Conjugate Method and other necessary tools to backtest the Markowitz optimised portfolio were written in C++ (which may be seen explicitly in \hyperref[sec:code]{code subsection} of the \hyperref[sec:appendix]{Appendix}).
+With a distinct focus on code readability, maintainability and efficiency, the backtesting frameworks, Quadratic Conjugate Method and other necessary tools to backtest the Markowitz optimised portfolio were written in C++ (which may be seen explicitly in the  \hyperref[sec:code]{code subsection} of the \hyperref[sec:appendix]{Appendix}).
 
 
 The project code was split into five distinct project directories for the easy of maintenance and cleanliness. The directories and their contents are outlined briefly for context in the following sections.
@@ -155,8 +155,8 @@ The project code was split into five distinct project directories for the easy o
 \subsubsection{Utility}
 \label{sec:utility}
 
-The Utility contained the classes and structs \textit{VectorUtil, Matrix, RunConfig} and \textit{Results}. 
-The first two contained small building-block-esque functions upon which the entirety of the application is based. As such, it was vital that these methods used to perform arithmetic operations on vectors and matrices were well tested and efficient.
+The Utility contains the classes and structs \textit{VectorUtil, Matrix, RunConfig} and \textit{Results}. 
+The first two housed small building-block-esque functions upon which the entirety of the application is based. As such, it was vital that these methods used to perform arithmetic operations on the rank 1 and 2 tensors were well tested and efficient. Creating these classes first greatly increased the speed and accuracy of development of the more complex classes that followed.
 
 \textit{RunConfig}  and \textit{Results} are both C++ structs used to group pieces of information in a convenient manor. The former contained parameters that were pertinent to a particular run of the backtest. It was useful to run the application on small and medium sized subsets of the data for debugging purposes and so with each of these came a set of parameters (in/out of sample window lengths, for example) that were specific to the dataset in question. It became cleaner and more convenient to group these parameters together into one object (a \textit{RunConfig} struct) and pass this to \textit{Portfolio::backtest()}.  
 The same philosophy was behind the use of the \textit{Results} struct as a return type from the aforementioned portfolio method as a way to group multiple result outputs together, instead of passing each object by reference or pointer individually. 
@@ -164,32 +164,28 @@ The same philosophy was behind the use of the \textit{Results} struct as a retur
 I found this line of reasoning to be especially pertinent with method signatures since their readability contributes massively to the readability of the application as a whole.  
 
 
-\subsubsection{Data Repository}
-\label{sec:data_repository}
+\subsubsection{Repository}
+\label{sec:repository}
+
+Repository houses the classes and methods used to load data in from the comma separated value files. The functionality here was mostly provided with few other editions required.
 
 
-\subsubsection{Parameter Estimation}
+\subsubsection{Estimator}
 \label{sec:parameter_estimation}
 
+This directory holds the \textit{ParamaterEstimator} class and its header, a prime example for the use case of a singleton object design pattern. The class holds public static methods that calculate various parameters such as the means, covariances and standard deviations of the aforementioned vector and self-made \textit{Matrix} objects passed to it. It maintains no state and has no attributes; testament to the functional approach to programming commonly used when encoding mathematical function calculation.
 
-\subsubsection{Portfolio}
-\label{sec:portfolio}
+\subsubsection{Optimiser}
+\label{sec:portfolio_optimiser}
 
+The \textit{PortfolioOptimiser} class and header are held in this directory and are where the Quadratic Conjugate Method is implemented. It was necessary for this class to maintain a state, having attributes on it that would be required across multiple of its methods. These attributes consisted of constant parameters from the \textit{RunConfig} of the current backtest, such as the initial values for the Lagrange Multipliers $\lambda$ and $\mu$ and the tolerance to which we declare the optimisation method as having converged.
+
+In addition, a getter and setter are employed to set the target return for the optimiser, $\overline{r_p}$ as the same instance of the \textit{PortfolioOptimiser} is used to solve for all different target returns.
 
 \subsubsection{Backtest}
 \label{sec:backtestcode}
 
-
-
-
-
-\begin{description}
-	\item [$\bullet$ \textbf{Backtest}] 
-	\item [$\bullet$ \textbf{Parameter Estimation}] 
-	\item [$\bullet$ \textbf{Portfolio}] 
-	\item [$\bullet$ \textbf{Data Repository}] 
-	\item [$\bullet$ \textbf{Utility}] 	
-\end{description}
+The Backtest directory is where the \textit{Portfolio} class, header and \textit{main.cpp} were stored. The \textit{main.cpp} acted as the entry into the application; where the \textit{RunConfig}s were initialised and sent to the aforementioned \textit{Portfolio::backtest()} method.
 
 
 

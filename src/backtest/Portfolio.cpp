@@ -17,26 +17,26 @@ Portfolio::Portfolio(RunConfig config_) {
 
     DataRepository(config_.fileName).readData(&allReturns);
 
-    tWindowLength = config_.tWindowLength;
-    bWindowLength = config_.bWindowLength;
     nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength;
 
     optimiser = PortfolioOptimiser(config_.EPSILON,
                                    config_.initialLambda,
                                    config_.initialMu,
-                                   config_.nAssets,
-                                   config_.nDays);
+                                   config_.nAssets);
 }
 
-Results Portfolio::run(double dailyReturn) {
+Results Portfolio::backtest(double dailyReturn) {
     // assets is columns, rows are days: C_ij = ith asset, jth day
 
     optimiser.setTargetDailyReturn(dailyReturn);
 
+    int tWindowLength = config.tWindowLength;
+    int bWindowLength = config.bWindowLength;
+
     vector<double> portReturnsOOS = vector<double>(nWindows);
     vector<double> portReturnsIS = vector<double>(nWindows);
-    int currentWindow = 0;
 
+    int currentWindow = 0;
     for (int day = 0; day + bWindowLength + tWindowLength - 1 < config.nDays; day += 12) {
 
         int bStart = day;
@@ -69,6 +69,8 @@ double Portfolio::evaluate(Matrix *m, vector<double> *weights) const {
 
     vector<double> aveAssetReturns = ParameterEstimator::estimateMultipleMeans(m);
 
+    // could swap with a call to innerProduct
+
     double portReturn = 0;
     for (int asset = 0; asset < config.nAssets; asset++) {
         portReturn += aveAssetReturns[asset] * weights->at(asset);
@@ -92,7 +94,7 @@ void Portfolio::checkWeights(vector<double> &w) const {
 
     double sum = accumulate(w.begin(), w.end(), 0.0);
 
-    if (abs(sum - 1.0) > WEIGHTS_TOLERANCE) {
+    if (abs(sum - 1.0) > config.WEIGHTSTOLERANCE) {
         cout << "The sum of the weights is: " << sum << endl;
         cout << "Exiting as weights are incorrect" << endl;
         exit(42);
@@ -101,9 +103,9 @@ void Portfolio::checkWeights(vector<double> &w) const {
 }
 
 //        first window
-//        portfolio.balance(returns[0:99])
-//        portfolio.backtest(returns[100:111])
+//        optimiser.balance(returns[0:99])
+//        optimiser.backtest(returns[100:111])
 //
 //        second window
-//        portfolio.balance(returns[12:111])
-//        portfolio.backtest(returns[112:123])
+//        optimiser.balance(returns[12:111])
+//        optimiser.backtest(returns[112:123])

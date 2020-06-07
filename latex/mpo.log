@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.6.7)  7 JUN 2020 20:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.6.7)  7 JUN 2020 23:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -376,24 +376,24 @@ RAPH
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 225.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 221.
  [3]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 225.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 221.
  (./mpo.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 225.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 225.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 221.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 221.
 Package rerunfilecheck Info: File `mpo.out' has not changed.
-(rerunfilecheck)             Checksum: 65E543F5C00581A688CCCD5E8497A67A;784.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 225.
+(rerunfilecheck)             Checksum: 77C0E849CE54ADC53DA5775516199EDD;768.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 221.
  ) 
 Here is how much of TeX's memory you used:
- 6432 strings out of 481239
- 96298 string characters out of 5920378
- 374334 words of memory out of 5000000
- 21565 multiletter control sequences out of 15000+600000
+ 6431 strings out of 481239
+ 96291 string characters out of 5920378
+ 374318 words of memory out of 5000000
+ 21564 multiletter control sequences out of 15000+600000
  539763 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,10n,29p,654b,375s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,10n,29p,654b,318s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/te
@@ -406,10 +406,10 @@ ic/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.
 pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on mpo.pdf (3 pages, 154267 bytes).
+Output written on mpo.pdf (3 pages, 156313 bytes).
 PDF statistics:
- 152 PDF objects out of 1000 (max. 8388607)
- 132 compressed objects within 2 object streams
+ 151 PDF objects out of 1000 (max. 8388607)
+ 131 compressed objects within 2 object streams
  27 named destinations out of 1000 (max. 500000)
  105 words of extra memory for PDF output out of 10000 (max. 10000000)
 
