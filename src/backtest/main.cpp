@@ -3,11 +3,11 @@
 #include "../estimator/ParameterEstimator.h"
 #include <chrono>
 
+using namespace std;
+
+void multipleRuns(int nRuns, vector<double> assets, RunConfig config);
 
 int main(int argc, char *argv[]) {
-
-
-    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
 
     RunConfig small = RunConfig{0.5,
@@ -24,48 +24,57 @@ int main(int argc, char *argv[]) {
                                  5,
                                  2,
                                  "../resources/medium_asset_returns.csv"};
-    RunConfig full = RunConfig{0.5,
+    RunConfig full = RunConfig(0.5,
                                0.5,
                                700,
                                83,
                                12,
                                100,
-                               "../resources/asset_returns.csv"};
-
-    Portfolio portfolio = Portfolio(full);
+                               "../resources/asset_returns.csv");
 
 
-    int nRuns = 20;
-    vector<double> times = vector<double>(nRuns) ;
+    int nRuns = 10;
+//    vector<double> assets = vector<double>{2, 5, 8, 16, 32, 64};
+    vector<double> assets = vector<double>{83, 83, 83, 83, 83, 83};
+
+    multipleRuns(nRuns, assets, full);
+
+
+    return 0;
+}
+
+void multipleRuns(int nRuns, vector<double> assets, RunConfig config) {
+
+    int nTargetReturns = 21;
+    double step = 0.005;
+    vector<double> times = vector<double>(nRuns);
 
     for (int n = 0; n < nRuns; n++) {
-        
-        int nTargetReturns = 21;
-        double step = 0.005;
+        chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
-        cout << "Target Return,\t IS Return,\t IS Std,\t OOS Return,\t OOS Std" << endl;
-        for (int i = 0; i < nTargetReturns; i++) {
-            double targetRet = i * step;
+
+        config.setNAssets(assets[n]);
+        Portfolio portfolio = Portfolio(config);
+
+        cout << "Target Return,\t IS Return,\t IS Std,\t OOS Return,\t OOS Std, \t nAssets: " << assets[n] << endl;
+        for (int rp = 0; rp < nTargetReturns; rp++) {
+
+            double targetRet = rp * step;
             Results results = portfolio.backtest(targetRet);
             cout << targetRet << ",\t " << results.retIS << ",\t " << results.stdIS
                  << ",\t " << results.retOOS << ",\t " << results.stdOOS << endl;
         }
 
         chrono::steady_clock::time_point end = chrono::steady_clock::now();
-        cout << "Time difference = " << chrono::duration_cast<chrono::seconds>(end - begin).count() << "[s]" << endl;
         double timeTaken = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
-        cout << "Time difference = " << timeTaken << "[ms]"
-             << endl;
 
+        cout << "Time taken: " << timeTaken << "[ms]" << endl;
+        cout << endl;
         times[n] = timeTaken;
     }
 
-    cout << "Mean of " << nRuns << " runs: " <<ParameterEstimator::calculateMean(&times) << " ms" << endl;
-    cout << "Std of " << nRuns << " runs: " <<ParameterEstimator::calculateStd(&times) << " ms" << endl;
+    cout << "Mean of " << nRuns << " runs: " << ParameterEstimator::calculateMean(&times) << " ms" << endl;
+    cout << "Std of " << nRuns << " runs: " << ParameterEstimator::calculateStd(&times) << " ms" << endl;
 
-
-
-
-    return 0;
+    printVector<double>(&times);
 }
-

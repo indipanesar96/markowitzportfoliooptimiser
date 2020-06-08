@@ -51,7 +51,7 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         sumSquaredError = newSumSquaredError;
         counter++;
-        if (counter == Q->getNRows() + 1) {
+        if (counter == Q->getNRows() * 2) {
             cout << "Something has gone wrong, conjugate gradient should've converged by now.." << endl;
             cout << "\t Error: " << sumSquaredError << endl;
             exit(1);

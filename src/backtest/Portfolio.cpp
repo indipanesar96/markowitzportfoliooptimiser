@@ -13,7 +13,7 @@ Portfolio::Portfolio(RunConfig config_) {
     config = config_;
     allReturns = Matrix(config_.nDays, config_.nAssets);
 
-    DataRepository(config_.fileName).readData(&allReturns);
+    DataRepository(config_.fileName, config_.nAssets).readData(&allReturns);
 
     nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength;
 

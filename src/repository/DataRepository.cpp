@@ -17,10 +17,8 @@ void DataRepository::readData(Matrix* matrix) {
         // i = return number ie day number
         // j = asset number
         while (csv.getline(line) != 0) {
-            for (int j = 0; j < csv.getnfield(); j++) {
-                double temp = string_to_double(csv.getfield(j));
-//                cout << "Asset " << j << ", Return "<<i<<"="<< temp<<"\n";
-                matrix->set(i, j, temp);
+            for (int j = 0; j < min(csv.getnfield(), nAssets); j++) {
+                matrix->set(i, j, string_to_double(csv.getfield(j)));
             }
             i++;
         }

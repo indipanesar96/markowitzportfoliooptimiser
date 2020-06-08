@@ -7,10 +7,12 @@ using namespace std;
 class DataRepository {
 
     string fileName;
+    int nAssets;
 
 public:
-    DataRepository(string &fileName_) {
+    DataRepository(string &fileName_, int nAssets_) {
         fileName = fileName_;
+        nAssets = nAssets_;
     }
 
     void readData(Matrix *matrix);
