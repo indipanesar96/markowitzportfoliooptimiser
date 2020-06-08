@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
                                "../resources/asset_returns.csv");
 
 
-    int nRuns = 10;
+    int nRuns = 7;
 //    vector<double> assets = vector<double>{2, 5, 8, 16, 32, 64};
     vector<double> assets = vector<double>{83, 83, 83, 83, 83, 83};
 
@@ -56,11 +56,11 @@ void multipleRuns(int nRuns, vector<double> assets, RunConfig config) {
         config.setNAssets(assets[n]);
         Portfolio portfolio = Portfolio(config);
 
-        cout << "Target Return,\t IS Return,\t IS Std,\t OOS Return,\t OOS Std, \t nAssets: " << assets[n] << endl;
+        cout << "Target Return,\t IS Return,\t IS Var,\t OOS Return,\t OOS Var, \t nAssets: " << assets[n] << endl;
         for (int rp = 0; rp < nTargetReturns; rp++) {
 
             double targetRet = rp * step;
-            Results results = portfolio.backtest(targetRet);
+            BacktestResults results = portfolio.backtest(targetRet);
             cout << targetRet << ",\t " << results.retIS << ",\t " << results.stdIS
                  << ",\t " << results.retOOS << ",\t " << results.stdOOS << endl;
         }

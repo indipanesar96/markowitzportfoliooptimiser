@@ -8,7 +8,7 @@
 \contentsline {subsubsection}{\numberline {2.1.4}Optimiser}{5}{subsubsection.2.1.4}%
 \contentsline {subsubsection}{\numberline {2.1.5}Backtest}{5}{subsubsection.2.1.5}%
 \contentsline {subsection}{\numberline {2.2}Quadratic Conjugate Method}{5}{subsection.2.2}%
-\contentsline {section}{\numberline {3}Results \& Discussion}{7}{section.3}%
+\contentsline {section}{\numberline {3}BacktestResults \& Discussion}{7}{section.3}%
 \contentsline {section}{\numberline {4}Conclusions}{7}{section.4}%
 \contentsline {section}{\numberline {5}Appendix}{7}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Code}{7}{subsection.5.1}%

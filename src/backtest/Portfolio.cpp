@@ -23,7 +23,7 @@ Portfolio::Portfolio(RunConfig config_) {
                                    config_.nAssets);
 }
 
-Results Portfolio::backtest(double dailyReturn) {
+BacktestResults Portfolio::backtest(double dailyReturn) {
     // assets is columns, rows are days: C_ij = ith asset, jth day
     //        first window
     //        this->balance(returns[0:99])
@@ -36,7 +36,10 @@ Results Portfolio::backtest(double dailyReturn) {
     optimiser.setTargetDailyReturn(dailyReturn);
 
     vector<double> portReturnsOOS = vector<double>(nWindows);
+    vector<double> portCovarianceOOS = vector<double>(nWindows);
+
     vector<double> portReturnsIS = vector<double>(nWindows);
+    vector<double> portCovarianceIS = vector<double>(nWindows);
 
     int currentWindow = 0;
     for (int day = 0;
@@ -53,25 +56,46 @@ Results Portfolio::backtest(double dailyReturn) {
 
         vector<double> portfolioWeights = this->balance(&balanceWindow);
 
-        portReturnsOOS[currentWindow] = Portfolio::evaluate(&testWindow, &portfolioWeights);
-        portReturnsIS[currentWindow] = Portfolio::evaluate(&balanceWindow, &portfolioWeights);
+//        PortfolioMetrics outOfSample = Portfolio::evaluate(&testWindow, &portfolioWeights); // r̄' * w OOS
+//        portReturnsOOS[currentWindow] = outOfSample.returns;
+//        portCovarianceOOS[currentWindow] = outOfSample.covariance;
+//
+//        PortfolioMetrics inSample = Portfolio::evaluate(&balanceWindow, &portfolioWeights); // r̄' * w IS
+//        portReturnsIS[currentWindow] = inSample.returns;
+//        portCovarianceIS[currentWindow] = inSample.covariance;
+
+        Portfolio::evaluate(&balanceWindow, &portfolioWeights, &portReturnsIS, &portCovarianceIS, currentWindow);
+        Portfolio::evaluate(&testWindow, &portfolioWeights, &portReturnsOOS, &portCovarianceOOS, currentWindow);
 
         currentWindow += 1;
     }
 
-    return (Results) {
+    return (BacktestResults) {
             ParameterEstimator::calculateMean(&portReturnsOOS), //Mean of portfolio Return across all windows, Out Of Sample
             ParameterEstimator::calculateMean(&portReturnsIS), //Mean of portfolio Return across all windows, In Sample
-            ParameterEstimator::calculateStd(&portReturnsOOS), //Std of portfolio Return across all windows, Out Of Sample
-            ParameterEstimator::calculateStd(&portReturnsIS) //Std of portfolio Return across all windows, In Sample
+            ParameterEstimator::calculateMean(&portCovarianceOOS), //Var of portfolio Return across all windows, Out Of Sample
+            ParameterEstimator::calculateMean(&portCovarianceIS) //Var of portfolio Return across all windows, In Sample
     };
 }
 
-double Portfolio::evaluate(Matrix *m, vector<double> *weights) {
+void Portfolio::evaluate(
+        Matrix *m,
+        vector<double> *weights,
+        vector<double> *returnsVector,
+        vector<double> *covariancesVector,
+        int index
+) {
 
     vector<double> aveAssetReturns = ParameterEstimator::estimateMultipleMeans(m);
 
-    return innerProduct(&aveAssetReturns, weights);
+    Matrix cov = ParameterEstimator::estimateCovariances(m, &aveAssetReturns);
+    vector<double> sigmaW = cov.multiplyVector(weights); // Sigma * w
+    // w' * Sigma * w
+
+    returnsVector->at(index) = innerProduct(&aveAssetReturns, weights);
+    covariancesVector->at(index) = innerProduct(weights, &sigmaW);
+
+//    return PortfolioMetrics{portfolioReturn, portfolioCovariance};
 }
 
 

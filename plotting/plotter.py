@@ -18,7 +18,18 @@ def plot_ef():
     plt.ylabel(r"Portfolio Returns [%]")
     # plt.legend(loc=r'best')
     plt.title(r"Out Of Sample Efficient Frontier Derived from Markowitz Portfolio Optimisation")
-    plt.savefig(r"../latex/figures/oos_ef.png", dpi=200)
+    # plt.savefig(r"../latex/figures/oos_ef.png", dpi=200)
+    plt.savefig(r"oos_ef.png", dpi=200)
+
+    plt.figure(5, figsize=figsize)
+    plt.errorbar(timings['IS Var'], timings['IS Return'],
+                 yerr=timings['IS Var'] / len(timings['IS Var']), label=r"IS")
+    plt.xlabel(r"Portfolio Variance [%]")
+    plt.ylabel(r"Portfolio Returns [%]")
+    # plt.legend(loc=r'best')
+    plt.title(r"In Sample Efficient Frontier Derived from Markowitz Portfolio Optimisation")
+    # plt.savefig(r"../latex/figures/is_ef.png", dpi=200)
+    plt.savefig(r"is_ef.png", dpi=200)
     plt.tight_layout()
 
 
@@ -31,7 +42,7 @@ def plot_linear():
     plt.ylabel(r"Portfolio Returns [%]")
     plt.title(r"Return Target Accuracy")
     plt.legend(loc=r'best')
-    plt.savefig(r"../latex/figures/oos_accuracy.png", dpi=200)
+    plt.savefig(r"oos_accuracy.png", dpi=200)
     plt.tight_layout()
 
 
@@ -50,7 +61,7 @@ def fit_polynomial(df):
 
 
 def plot_order():
-    f, (ax0, ax1) = plt.subplots(nrows=2, ncols=1, figsize=figsize)
+    f, (ax0, ax1) = plt.subplots(nrows=2, ncols=1, figsize=(13,10))
     ax0.plot(assets_variation['nAssets'], assets_variation['time [ms]'], label=r'Actual')
     ax0.plot(assets_variation['nAssets'], assets_variation[f'Fitted: 1'], linestyle="-.",
              label=f'(Order, MSE rank): (1, 3)')
@@ -63,7 +74,7 @@ def plot_order():
     ax0.legend(loc=r'best')
     ax0.set_title("Investigating the time complexity in number of assets considered")
 
-    ax1.plot(assets_variation['nAssets'], assets_variation['time [ms]'] - assets_variation['time [ms]'], label=r'Truth')
+    ax1.plot(assets_variation['nAssets'], assets_variation['time [ms]'] - assets_variation['time [ms]'], label=r'Actual')
     ax1.plot(assets_variation['nAssets'], assets_variation[f'Fitted: 1'] - assets_variation['time [ms]'],
              linestyle="-.",
              label=f'(Order, MSE rank): (1, 3)')
@@ -78,18 +89,19 @@ def plot_order():
     ax1.legend(loc=r'best')
     ax1.set_title(r"Residual between fit and actual")
 
-    plt.savefig(r"../latex/figures/time_complexity_in_assets.png", dpi=200)
+    # plt.savefig(r"../latex/figures/time_complexity_in_assets.png", dpi=200)
+    plt.savefig(r"time_complexity_in_assets.png", dpi=200)
     plt.tight_layout()
 
 
 timings = read(r"results.csv")
 assets_variation = read(r"varying_assets.csv")
 
-timings['OOS Var'] = timings['OOS Std'].apply(lambda x: x ** 2)
-timings['IS Var'] = timings['IS Std'].apply(lambda x: x ** 2)
+# timings['OOS Var'] = timings['OOS Std'].apply(lambda x: x ** 2)
+# timings['IS Var'] = timings['IS Std'].apply(lambda x: x ** 2)
 
 mse, fitted_asset_variation = fit_polynomial(assets_variation)
 plot_order()
-plot_ef()
-plot_linear()
-# plt.show()
+# plot_ef()
+# plot_linear()
+plt.show()

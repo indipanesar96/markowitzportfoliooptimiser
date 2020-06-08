@@ -4,7 +4,7 @@
 
 #include "../util/RunConfig.h"
 #include "../util/Matrix.h"
-#include "../util/Results.h"
+#include "../util/BacktestResults.h"
 #include "../repository/DataRepository.h"
 #include "../optimiser/PortfolioOptimiser.h"
 #include "../estimator/ParameterEstimator.h"
@@ -17,12 +17,17 @@ class Portfolio {
 private:
     vector<double> balance(Matrix *m);
 
-    static double evaluate(Matrix *m, vector<double> *weights) ;
+    static void evaluate(
+            Matrix *m,
+            vector<double> *weights,
+            vector<double> *returnsVector,
+            vector<double> *covariancesVector,
+            int index);
 
     void checkWeights(vector<double> &w) const;
 
 public:
-    Results backtest(double dailyReturn);
+    BacktestResults backtest(double dailyReturn);
 
     explicit Portfolio(RunConfig config_);
 

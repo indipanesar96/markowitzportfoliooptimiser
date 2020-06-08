@@ -20,7 +20,7 @@ set(SOURCE_FILES
         src/optimiser/PortfolioOptimiser.h
         src/util/VectorUtil.cpp
         src/util/VectorUtil.h
-        src/util/RunConfig.h src/util/Results.h)
+        src/util/RunConfig.h src/util/BacktestResults.h)
 
 
 add_executable(markowitzportfoliooptimiser ${SOURCE_FILES})
