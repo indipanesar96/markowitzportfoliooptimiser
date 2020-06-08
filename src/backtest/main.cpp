@@ -1,11 +1,10 @@
 #include "Portfolio.cpp"
-#include "../util/RunConfig.h"
+#include "../util/VectorUtil.h"
+#include "../estimator/ParameterEstimator.h"
 #include <chrono>
 
 
 int main(int argc, char *argv[]) {
-
-
 
 
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
@@ -35,20 +34,36 @@ int main(int argc, char *argv[]) {
 
     Portfolio portfolio = Portfolio(full);
 
-    int nRuns = 21;
-    double step = 0.005;
 
-    cout << "Target Return,\t IS Return,\t IS Std,\t OOS Return,\t OOS Std" << endl;
-    for (int i = 0; i < nRuns; i++) {
-        double targetRet = i * step;
-        Results results = portfolio.backtest(targetRet);
-        cout << targetRet << ",\t " << results.retIS << ",\t " << results.stdIS
-             << ",\t " << results.retOOS << ",\t " << results.stdOOS << endl;
+    int nRuns = 20;
+    vector<double> times = vector<double>(nRuns) ;
+
+    for (int n = 0; n < nRuns; n++) {
+        
+        int nTargetReturns = 21;
+        double step = 0.005;
+
+        cout << "Target Return,\t IS Return,\t IS Std,\t OOS Return,\t OOS Std" << endl;
+        for (int i = 0; i < nTargetReturns; i++) {
+            double targetRet = i * step;
+            Results results = portfolio.backtest(targetRet);
+            cout << targetRet << ",\t " << results.retIS << ",\t " << results.stdIS
+                 << ",\t " << results.retOOS << ",\t " << results.stdOOS << endl;
+        }
+
+        chrono::steady_clock::time_point end = chrono::steady_clock::now();
+        cout << "Time difference = " << chrono::duration_cast<chrono::seconds>(end - begin).count() << "[s]" << endl;
+        double timeTaken = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
+        cout << "Time difference = " << timeTaken << "[ms]"
+             << endl;
+
+        times[n] = timeTaken;
     }
 
-    chrono::steady_clock::time_point end = chrono::steady_clock::now();
-    cout << "Time difference = " << chrono::duration_cast<chrono::seconds>(end - begin).count() << "[s]" << endl;
-    cout << "Time difference = " << chrono::duration_cast<chrono::milliseconds> (end - begin).count() << "[ms]" << endl;
+    cout << "Mean of " << nRuns << " runs: " <<ParameterEstimator::calculateMean(&times) << " ms" << endl;
+    cout << "Std of " << nRuns << " runs: " <<ParameterEstimator::calculateStd(&times) << " ms" << endl;
+
+
 
 
     return 0;

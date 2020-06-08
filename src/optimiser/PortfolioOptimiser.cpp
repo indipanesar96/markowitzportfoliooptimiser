@@ -15,16 +15,16 @@ vector<double> PortfolioOptimiser::calculateWeights
 
     vector<double> B = this->generateB();
 
-    vector<double> something = this->conjugateGradientMethod(&Q, &X0, &B);
+    vector<double> weights = this->conjugateGradientMethod(&Q, &X0, &B);
 
-    return something;
+    return weights;
 }
 
 vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
                                                            vector<double> *X0,
-                                                           vector<double> *B) {
+                                                           vector<double> *B) const {
     vector<double> QX0 = Q->multiplyVector(X0);
-    vector<double> sK = vectorSubtract(B, &QX0);
+    vector<double> sK = vectorLinearCombination(1.0, B, -1.0, &QX0);
 
     double sumSquaredError = innerProduct(&sK, &sK);
 
@@ -38,8 +38,8 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         double alpha = sumSquaredError / innerProduct(&pK, &qPK);
 
-        xK = vectorAdditions(1.0, &xK, alpha, &pK);
-        sK = vectorAdditions(1.0, &sK, -alpha, &qPK);
+        xK = vectorLinearCombination(1.0, &xK, alpha, &pK);
+        sK = vectorLinearCombination(1.0, &sK, -alpha, &qPK);
 
         double newSumSquaredError = innerProduct(&sK, &sK);
 
@@ -47,7 +47,7 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         double beta = newSumSquaredError / sumSquaredError;
 
-        pK = vectorAdditions(1.0, &sK, beta, &pK);
+        pK = vectorLinearCombination(1.0, &sK, beta, &pK);
 
         sumSquaredError = newSumSquaredError;
         counter++;
@@ -57,15 +57,14 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
             exit(1);
         }
     }
+
+    // discarding the optimal values of lambda and mu since we don't need them
     return vector<double>(xK.begin(), xK.end() - 2);
 }
 
 vector<double> PortfolioOptimiser::generateB() const {
 
     vector<double> b = vector<double>(nAssets + 2);
-    for (int i = 0; i < nAssets; i++) {
-        b[i] = 0.0;
-    } // not necessary but maybe i havent initialised the first nAssets elements
     b[nAssets] = -targetReturn;
     b[nAssets + 1] = -1;
     return b;
@@ -75,12 +74,14 @@ Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanRe
 
     Matrix q = Matrix(nAssets + 2, nAssets + 2);
 
+    // copy over the covariances from the covariance matrix
     for (int i = 0; i < nAssets; i++) {
         for (int j = 0; j < nAssets; j++) {
             q.set(i, j, covariances->get(i, j));
         }
     }
 
+    // now add the extra 2 columns and rows
     for (int j = 0; j < nAssets; j++) {
         double thisMeanReturn = meanReturns->at(j);
 
@@ -93,12 +94,12 @@ Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanRe
 }
 
 
-vector<double> PortfolioOptimiser::calculateX0() {
+vector<double> PortfolioOptimiser::calculateX0() const {
 
+    // initialising weights
+    // first guess is an equally weighted optimiser
     vector<double> x0 = vector<double>(nAssets + 2);
     for (int i = 0; i < nAssets; i++) {
-        // initialising weights
-        // first guess is an equally weighted optimiser
         x0[i] = 1.0 / nAssets;
     }
     x0[nAssets] = initialLambda;
@@ -107,33 +108,5 @@ vector<double> PortfolioOptimiser::calculateX0() {
     return x0;
 }
 
-
-//    Matrix test = Matrix(4, 4);
-//
-//    test.set(0, 0, 1);
-//    test.set(0, 1, 1);
-//    test.set(0, 2, 1);
-//    test.set(0, 3, 1);
-//
-//    test.set(1, 0, 2);
-//    test.set(1, 1, 2);
-//    test.set(1, 2, 2);
-//    test.set(1, 3, 2);
-//
-//    test.set(2, 0, 3);
-//    test.set(2, 1, 3);
-//    test.set(2, 2, 3);
-//    test.set(2, 3, 3);
-//
-//    test.set(3, 0, 4);
-//    test.set(3, 1, 4);
-//    test.set(3, 2, 4);
-//    test.set(3, 3, 4);
-//
-//    vector<double> sK;
-//    sK.push_back(2);
-//    sK.push_back(3);
-//    sK.push_back(4);
-//    sK.push_back(5);
 
 

@@ -8,36 +8,16 @@
 using namespace std;
 
 
-
 template<typename T,
         typename = typename enable_if< is_arithmetic<T>::value, T> ::type>
-vector<T> vectorSubtract(vector<T> *a, vector<T> *b) {
+vector<T> vectorLinearCombination(T aCoeff, vector<T> *a, T bCoeff, vector<T> *b) {
 
     int aSize = a->size();
     int bSize = b->size();
     if (aSize != bSize) {
         cout << "Vectors aren't the same size and so cannot be subtracted from one another." << endl;
-        cout << "\t sizes: " << aSize << " and " << bSize;
-        exit(1);
-    }
-    vector<double> result = vector<double>(aSize);
-    for (int i = 0; i < aSize; i++) {
-        result[i] = a->at(i) - b->at(i);
-    }
-
-    return result;
-}
-
-template<typename T,
-        typename = typename enable_if< is_arithmetic<T>::value, T> ::type>
-vector<T> vectorAdditions(double aCoeff, vector<T> *a, double bCoeff, vector<T> *b) {
-
-    int aSize = a->size();
-    int bSize = b->size();
-    if (aSize != bSize) {
-        cout << "Vectors aren't the same size and so cannot be subtracted from one another." << endl;
-        cout << "\t sizes: " << aSize << " and " << bSize;
-        exit(1);
+        cout << "\t Sizes: " << aSize << " and " << bSize;
+        exit(12);
     }
     vector<double> result = vector<double>(aSize);
     for (int i = 0; i < aSize; i++) {
@@ -63,7 +43,7 @@ T innerProduct(vector<T> *a, vector<T> *b) {
 
 
 template<typename T>
-void print(vector<T> *toBePrinted) {
+void printVector(vector<T> *toBePrinted) {
     for (T elem: *toBePrinted) {
         cout << elem << endl;
     }

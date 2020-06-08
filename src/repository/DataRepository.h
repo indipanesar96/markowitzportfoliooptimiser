@@ -15,7 +15,7 @@ public:
 
     void readData(Matrix *matrix);
 
-    double string_to_double(const string &s);
+    static double string_to_double(const string &s);
 
 };
 
