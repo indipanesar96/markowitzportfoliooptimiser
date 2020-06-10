@@ -18,7 +18,6 @@ set(SOURCE_FILES
         src/estimator/ParameterEstimator.h
         src/optimiser/PortfolioOptimiser.cpp
         src/optimiser/PortfolioOptimiser.h
-        src/util/VectorUtil.cpp
         src/util/VectorUtil.h
         src/util/RunConfig.h src/util/BacktestResults.h)
 

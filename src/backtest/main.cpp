@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
                                "../resources/asset_returns.csv");
 
 
-    int nRuns = 7;
+    int nRuns = 5;
 //    vector<double> assets = vector<double>{2, 5, 8, 16, 32, 64};
     vector<double> assets = vector<double>{83, 83, 83, 83, 83, 83};
 
@@ -76,5 +76,6 @@ void multipleRuns(int nRuns, vector<double> assets, RunConfig config) {
     cout << "Mean of " << nRuns << " runs: " << ParameterEstimator::calculateMean(&times) << " ms" << endl;
     cout << "Std of " << nRuns << " runs: " << ParameterEstimator::calculateStd(&times) << " ms" << endl;
 
+    cout << "Times:" << endl;
     printVector<double>(&times);
 }

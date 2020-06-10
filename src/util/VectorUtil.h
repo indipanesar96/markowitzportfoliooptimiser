@@ -4,8 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <type_traits>
-
-using namespace std;
+#include <algorithm>
 
 
 template<typename T,
@@ -25,6 +24,12 @@ vector<T> vectorLinearCombination(T aCoeff, vector<T> *a, T bCoeff, vector<T> *b
     }
 
     return result;
+}
+
+template<typename T,
+        typename = typename enable_if< is_arithmetic<T>::value, T> ::type>
+T countNegative(const vector<T>& elems) {
+    return count_if(elems.begin(), elems.end(), [](T c){return c < 0;});
 }
 
 template<typename T,
