@@ -233,17 +233,17 @@ This continues until the end of the 700 day dataset is reached. In total, the ap
 \label{sec:implementation_code}
 
 
-With a distinct focus on code readability, maintainability and efficiency, the backtesting frameworks, Quadratic Conjugate Method and other necessary tools for the Markowitz optimised portfolio were written in C++ (which may be seen explicitly in the  \hyperref[sec:code]{code subsection} of the \hyperref[sec:appendix]{Appendix}, or in the \href{https://github.com/indipanesar96/markowitzportfoliooptimiser}{public repository}).
+With a distinct focus on code readability, maintainability and efficiency, the backtesting frameworks, Quadratic Conjugate Method and other necessary tools for the Markowitz optimised portfolio were written in C++ (which may be seen explicitly in the or in the \href{https://github.com/indipanesar96/markowitzportfoliooptimiser}{public repository} or in the source files included in the submission).
 
 
-The project code was split into five distinct project directories for the easy of maintenance and cleanliness. The directories and their contents are outlined briefly for context in the following sections.
+The project code was split into five distinct project directories for the easy of maintenance and cleanliness. The directories and their contents are outlined briefly in the following sections.
 
 
 
 \subsubsection{Utility}
 \label{sec:utility}
 
-The Utility contains the classes and headers for \textit{VectorUtil, Matrix} and \textit{RunConfig}. The first two housed small building-block-esque functions upon which the entirety of the application is based. As such, it was vital that these methods used to perform arithmetic operations on the rank 1 and 2 tensors were well tested and efficient. Here and in general throughout the application, objects were passed to one another by pointer if possible to avoid the duplication of items in memory.
+The Utility contains the classes and headers for \textit{VectorUtil, Matrix, RunConfig} and struct \textit{BacktestResults}. The first two housed small building-block-esque functions upon which the entirety of the application is based. As such, it was vital that these methods used to perform arithmetic operations on the rank 1 and 2 tensors were well tested and efficient. Here and in general throughout the application, objects were passed to one another by pointer if possible to avoid the unnecessary duplication of items in memory.
 
 Creating these classes first greatly increased the speed and accuracy of development of the more complex classes that followed.
 It was imperative that the arithmetic functions in \textit{VectorUtil.h} were as generic as possible. As a result, generic types were used throughout, though a condition was imposed in the typename signature that ensured the types being passed were numeric, as can be seen in the snippet below:
@@ -279,6 +279,7 @@ Also seen in the above method is the helpful error message and an easily searcha
 
 I found this line of reasoning around ease of use to be especially pertinent with method signatures since their readability contributes massively to the readability of the application as a whole.  
 
+The \textit{BacktestResults} struct was useful in combining mutually relevant results; the mean realised portfolio return and variance in and out of sample. Further, it acted as a safety measure as it allowed the strong typing of variables of type double, preventing errors associated with accessing the wrong one. For example, \textit{BacktestResults.retOOS} irrefutably returned the out of sample return. Had these four doubles been placed into a list, the user at the callsite would have to have prerequisuite knowledge of the indices of the list (for example knowing that out of sample return would be the 3rd element in the list) - a practice prone to well disguised bugs.
 
 \subsubsection{Repository}
 \label{sec:repository}
