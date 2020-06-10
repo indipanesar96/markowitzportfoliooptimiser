@@ -45,6 +45,8 @@ public:
     vector<double> multiplyVector(vector<double> *vec);
 
     Matrix multiply(Matrix *B);
+
+    void setCol(int i, vector<double> *values);
 };
 
 #endif //MARKOWITZPORTFOLIOOPTIMISER_MATRIX_H

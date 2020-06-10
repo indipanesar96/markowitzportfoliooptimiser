@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
                                "../resources/asset_returns.csv");
 
 
-    int nRuns = 6;
+    int nRuns = 1;
     // Below is the testing for the time complexity analysis
 //    vector<double> assets = vector<double>{2, 5, 8, 16, 32, 64};
     vector<double> assets = vector<double>{83, 83, 83, 83, 83, 83}; // size must be same as nRuns above
@@ -47,25 +47,33 @@ void multipleRuns(int nRuns, vector<double> assets, RunConfig config) {
     // analysis and to generate timings for performance anlysis
 
 
-    int nPortfolios = 21;
+    int nPortfolios = 21; // 21 portfolios from 0% to 10% target returns
     double step = 0.005; // each portfolio target return goes up by 0.5%
     vector<double> times = vector<double>(nRuns);
+    int nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength  ;
 
     for (int n = 0; n < nRuns; n++) {
         chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
         // change the number of assets to be used for this iteration
         config.setNAssets(assets[n]);
-        Portfolio portfolio = Portfolio(config);
+
+        Matrix allRealisedPortReturnsOOS = Matrix(nWindows, nPortfolios);
+        Matrix allRealisedMktReturnsOOS = Matrix(nWindows, nPortfolios);
+
+        Portfolio portfolio = Portfolio(config, &allRealisedPortReturnsOOS, &allRealisedMktReturnsOOS);
 
         cout << "Target Return,\t IS Return,\t IS Var,\t OOS Return,\t OOS Var, \t nAssets: " << assets[n] << endl;
-        for (int rp = 0; rp < nPortfolios; rp++) {
+        for (int p = 0; p < nPortfolios; p++) {
 
-            double targetRet = rp * step;
-            BacktestResults results = portfolio.backtest(targetRet);
+            double targetRet = p * step;
+            BacktestResults results = portfolio.backtest(targetRet, p);
             cout << targetRet << ",\t " << results.retIS << ",\t " << results.varIS
                  << ",\t " << results.retOOS << ",\t " << results.varOOS << endl;
         }
+//        allRealisedPortReturnsOOS.print();
+//        cout<<endl;
+//        allRealisedMktReturnsOOS.print();
 
         chrono::steady_clock::time_point end = chrono::steady_clock::now();
         double timeTaken = chrono::duration_cast<chrono::milliseconds>(end - begin).count();

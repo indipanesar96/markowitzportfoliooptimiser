@@ -7,24 +7,34 @@
 
 using namespace std;
 
-Portfolio::Portfolio(RunConfig config_) {
+Portfolio::Portfolio(RunConfig config_, Matrix* allPortReturns_, Matrix* allMktReturns_){
+
     config = config_;
+    nWindows = (config_.nDays - config_.bWindowLength) / config_.tWindowLength;
 
-    // load data inside here
-    allReturns = Matrix(config_.nDays, config_.nAssets);
-
-    DataRepository(config_.fileName, config_.nAssets).readData(&allReturns);
-
-    nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength;
+    // matrices to store portfolio and market returns to track
+    // their evolution over multiple runs with different targets
+    allOOSPortReturns = allPortReturns_ ;
+    allMktOOSReturns = allMktReturns_;
 
     // pass through values from our RunConfig to initialise our optimiser
     optimiser = PortfolioOptimiser(config_.EPSILON,
                                    config_.initialLambda,
                                    config_.initialMu,
                                    config_.nAssets);
+
+    equallyWeightPortfolio = vector<double>(config_.nAssets);
+    for (int i=0; i<config.nAssets; i++){
+        equallyWeightPortfolio[i] = 1.0 / config.nAssets;
+    }
+
+    allReturns = Matrix(config_.nDays, config_.nAssets);
+
+    // load data inside here
+    DataRepository(config_.fileName, config_.nAssets).readData(&allReturns);
 }
 
-BacktestResults Portfolio::backtest(double targetReturn) {
+BacktestResults Portfolio::backtest(double targetReturn, int runNumber) {
 
     // assets is columns, rows are days: C_ij = ith asset, jth day
     // using the setter to change the target return every time
@@ -35,6 +45,12 @@ BacktestResults Portfolio::backtest(double targetReturn) {
 
     vector<double> portReturnsIS = vector<double>(nWindows);
     vector<double> portCovarianceIS = vector<double>(nWindows);
+
+    vector<double> mktReturnsIS = vector<double>(nWindows);
+    vector<double> mktCovarianceIS = vector<double>(nWindows);
+
+    vector<double> mktReturnsOOS = vector<double>(nWindows);
+    vector<double> mktCovarianceOOS = vector<double>(nWindows);
 
     int currentWindow = 0;
     double nShorts = 0;
@@ -57,10 +73,17 @@ BacktestResults Portfolio::backtest(double targetReturn) {
         Portfolio::evaluate(&balanceWindow, &portfolioWeights, &portReturnsIS, &portCovarianceIS, currentWindow);
         Portfolio::evaluate(&testWindow, &portfolioWeights, &portReturnsOOS, &portCovarianceOOS, currentWindow);
 
+        Portfolio::evaluate(&balanceWindow, &equallyWeightPortfolio, &mktReturnsIS, &mktCovarianceIS, currentWindow);
+        Portfolio::evaluate(&testWindow, &equallyWeightPortfolio, &mktReturnsOOS, &mktCovarianceOOS, currentWindow);
+
         nShorts += countNegative(portfolioWeights) / nWindows;
+
 
         currentWindow += 1;
     }
+
+    allOOSPortReturns->setCol(runNumber, &portReturnsOOS);
+    allMktOOSReturns->setCol(runNumber, &mktReturnsOOS);
 
     // below is the output required for the time complexity analysis
     //    cout << "(Average Number of Shorts, Target Return): " << nShorts << ", " << dailyReturn <<endl;

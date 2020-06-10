@@ -2,7 +2,6 @@
 #include <sstream>
 #include "../repository/csv.h"
 #include <vector>
-#include "../repository/DataRepository.h"
 #include "Matrix.h"
 
 #include <stdexcept>
@@ -75,9 +74,17 @@ vector<double> Matrix::multiplyVector(vector<double> *vec) {
     return result;
 }
 
+
 void Matrix::set(int row, int col, double value) {
     checkInputRowColDimensions(row, col);
     matrix[row][col] = value;
+}
+
+void Matrix::setCol(int i, vector<double> *values) {
+    checkRowColExists(i, false);
+    for (int r = 0; r < nRows; r++) {
+        this->set(r, i, values->at(r));
+    }
 }
 
 
@@ -174,6 +181,7 @@ vector<double> Matrix::getCol(int i) {
 
     return column;
 }
+
 
 Matrix Matrix::get(int rowStart, int rowEnd, int colStart, int colEnd) {
     // end of each range is not included

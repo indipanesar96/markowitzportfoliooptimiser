@@ -15,6 +15,9 @@ using namespace std;
 
 class Portfolio {
 private:
+
+    Matrix* allOOSPortReturns;
+    Matrix* allMktOOSReturns;
     vector<double> balance(Matrix *m);
 
     static void evaluate(
@@ -27,15 +30,18 @@ private:
     void checkWeights(vector<double> &w) const;
 
 public:
-    BacktestResults backtest(double targetReturn);
+    BacktestResults backtest(double targetReturn, int runNumber);
 
-    explicit Portfolio(RunConfig config_);
+    explicit Portfolio(RunConfig config_, Matrix* allPortReturns, Matrix* allMktReturns);
+//    explicit Portfolio(RunConfig config_);
+
 
     // default vals
     Matrix allReturns = Matrix(4, 2);
     RunConfig config = RunConfig{0.5, 0.5, 1, 1, 2, 1, ""};
     PortfolioOptimiser optimiser = PortfolioOptimiser(1, 1, 1, 1);
     int nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength;
+    vector<double> equallyWeightPortfolio = vector<double>(config.nAssets);
 };
 
 #endif
