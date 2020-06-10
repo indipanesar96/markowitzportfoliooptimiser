@@ -4,6 +4,7 @@
 #include <cmath>
 
 vector<double> ParameterEstimator::estimateMultipleMeans(Matrix *m) {
+    // used to calculate the means of a returns matrix, calculating one mean per column
 
     int nCols = m->getNCols();
     vector<double> means = vector<double>(nCols);
@@ -17,11 +18,12 @@ vector<double> ParameterEstimator::estimateMultipleMeans(Matrix *m) {
 }
 
 double ParameterEstimator::calculateMean(vector<double> *values) {
+    // self-explanatory
     return accumulate(values->begin(), values->end(), 0.0) / values->size();
 }
 
 double ParameterEstimator::calculateStd(vector<double> *vals) {
-
+    // self-explanatory
     int s = vals->size();
     double mean = calculateMean(vals);
     double var = 0.0;

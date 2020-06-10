@@ -6,10 +6,13 @@
 #include <type_traits>
 #include <algorithm>
 
-
+// template type that allows a generic type but ensures it is numeric
+// eg strings can't be passed
 template<typename T,
-        typename = typename enable_if< is_arithmetic<T>::value, T> ::type>
+        typename = typename enable_if<is_arithmetic<T>::value, T>::type>
 vector<T> vectorLinearCombination(T aCoeff, vector<T> *a, T bCoeff, vector<T> *b) {
+    // for operations like result = aCoefficient * A + bCoefficient * B
+    // where aCoefficient and bCoefficient are scalars
 
     int aSize = a->size();
     int bSize = b->size();
@@ -20,21 +23,23 @@ vector<T> vectorLinearCombination(T aCoeff, vector<T> *a, T bCoeff, vector<T> *b
     }
     vector<double> result = vector<double>(aSize);
     for (int i = 0; i < aSize; i++) {
-        result[i] = aCoeff * a->at(i) + bCoeff* b->at(i);
+        result[i] = aCoeff * a->at(i) + bCoeff * b->at(i);
     }
 
     return result;
 }
 
 template<typename T,
-        typename = typename enable_if< is_arithmetic<T>::value, T> ::type>
-T countNegative(const vector<T>& elems) {
-    return count_if(elems.begin(), elems.end(), [](T c){return c < 0;});
+        typename = typename enable_if<is_arithmetic<T>::value, T>::type>
+T countNegative(const vector<T> &elems) {
+    // count how many elements are negative, used for determining the number of shorts
+    return count_if(elems.begin(), elems.end(), [](T x) { return x < 0; });
 }
 
 template<typename T,
-        typename = typename enable_if< is_arithmetic<T>::value, T> ::type>
+        typename = typename enable_if<is_arithmetic<T>::value, T>::type>
 T innerProduct(vector<T> *a, vector<T> *b) {
+    // calculate inner product of two vectors, with some error checking
 
     int aSize = a->size();
     int bSize = b->size();
@@ -49,6 +54,7 @@ T innerProduct(vector<T> *a, vector<T> *b) {
 
 template<typename T>
 void printVector(vector<T> *toBePrinted) {
+    // for debugging
     for (T elem: *toBePrinted) {
         cout << elem << endl;
     }

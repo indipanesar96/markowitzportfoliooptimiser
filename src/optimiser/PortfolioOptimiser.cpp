@@ -8,6 +8,7 @@ using namespace std;
 
 vector<double> PortfolioOptimiser::calculateWeights
         (Matrix *covariances, vector<double> *meanReturns) {
+    // a wrapper function that's the only exposed part of this class
 
     vector<double> X0 = calculateX0();
 
@@ -23,6 +24,10 @@ vector<double> PortfolioOptimiser::calculateWeights
 vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
                                                            vector<double> *X0,
                                                            vector<double> *B) const {
+    // implementation of the Quadratic Conjugate Method as specified
+    // by the algorithm in the assignment pdf
+
+    // initialising the variables required for loop
     vector<double> QX0 = Q->multiplyVector(X0);
     vector<double> sK = vectorLinearCombination(1.0, B, -1.0, &QX0);
 
@@ -43,6 +48,7 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 
         double newSumSquaredError = innerProduct(&sK, &sK);
 
+        // if satisfied, no need to calculate/update the variables below
         if (newSumSquaredError < EPSILON) break;
 
         double beta = newSumSquaredError / sumSquaredError;
@@ -63,7 +69,8 @@ vector<double> PortfolioOptimiser::conjugateGradientMethod(Matrix *Q,
 }
 
 vector<double> PortfolioOptimiser::generateB() const {
-
+    // self-explanatory. Vector initialisation with a size automatically initialises it with
+    // zeros, so there's no need for me to loop over it and assign each element to 0 manually
     vector<double> b = vector<double>(nAssets + 2);
     b[nAssets] = -targetReturn;
     b[nAssets + 1] = -1;
@@ -71,6 +78,7 @@ vector<double> PortfolioOptimiser::generateB() const {
 }
 
 Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanReturns) const {
+    //Generating the Q matrix required - heavily dependent on returns
 
     Matrix q = Matrix(nAssets + 2, nAssets + 2);
 
@@ -95,13 +103,14 @@ Matrix PortfolioOptimiser::generateQ(Matrix *covariances, vector<double> *meanRe
 
 
 vector<double> PortfolioOptimiser::calculateX0() const {
-
     // initialising weights
     // first guess is an equally weighted optimiser
     vector<double> x0 = vector<double>(nAssets + 2);
     for (int i = 0; i < nAssets; i++) {
         x0[i] = 1.0 / nAssets;
     }
+
+    // initialMu and Lambda are from RunConfig
     x0[nAssets] = initialLambda;
     x0[nAssets + 1] = initialMu;
 

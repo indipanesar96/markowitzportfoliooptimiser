@@ -13,22 +13,22 @@ using namespace std;
 Matrix::Matrix(int nRows_, int nCols_) {
 
     if (nRows_ < 1) {
-//        throw invalid_argument("nRows of matrix must be >1 !");
         cout << "nRows of matrix must be >= 1!" << endl;
         exit(1); // this is suboptimal - no destructors called
     }
     if (nCols_ < 1) {
-//        throw invalid_argument("nCols of matrix must be >1 !");
         cout << "nCols of matrix must be >= 1!" << endl;
         exit(1); // this is suboptimal - no destructors called
     }
 
     nCols = nCols_;
     nRows = nRows_;
-    matrix.resize(nRows + 1); //adding +1 here got rid of the heap buffer overflow
-// allways allocate >=1 more byte than you read
+    matrix.resize(nRows + 1);
+    //adding +1 here got rid of the heap buffer overflow
+    // allways allocate >=1 more byte than you read
     for (int r = 0; r <= nRows; r++) {
-        matrix[r].resize(nCols + 1); //adding +1 here got rid of the hea buffer overflow
+        //adding +1 here got rid of the hea buffer overflow
+        matrix[r].resize(nCols + 1);
     }
     for (int r = 0; r < nRows; ++r) {
         for (int c = 0; c < nCols; ++c) {
@@ -45,6 +45,7 @@ double Matrix::get(int n, int i) {
 
 
 void Matrix::checkInputRowColDimensions(int inputNRows, int inputNCols) const {
+    // sanity check - better to exit the application than to allow it to run on with undefined behaviour
     if (inputNRows < 0 || inputNRows > nRows) {
         cout << "Matrix has " << nRows
              << " rows, cannot access row: " << inputNRows << endl;
@@ -59,6 +60,7 @@ void Matrix::checkInputRowColDimensions(int inputNRows, int inputNCols) const {
 }
 
 vector<double> Matrix::multiplyVector(vector<double> *vec) {
+    // for operations like Matrix A dot vector B
     // checker : https://matrix.reshish.com/multiplication.php
 
     checkDimsForMultiplication(vec->size());
@@ -90,6 +92,8 @@ int Matrix::getNCols() const {
 
 
 void Matrix::print() {
+    // For debugging
+
     cout << setiosflags(ios::fixed)
          << setprecision(4);
     for (const vector<double> &row : matrix) {
@@ -101,49 +105,6 @@ void Matrix::print() {
     cout << endl;
 }
 
-Matrix Matrix::subtract(Matrix *B) {
-    Matrix C = Matrix(nRows, nCols);
-
-    const int bCols = B->getNCols();
-    const int bRows = B->getNRows();
-
-    if (nRows == bRows && nCols == bCols) {
-        for (int i = 0; i < nRows; ++i) {
-            for (int j = 0; j < nCols; ++j) {
-                C.set(i, j, matrix[i][j] - B->get(i, j));
-            }
-        }
-        return C;
-    } else {
-        cout << "Matrix A and B don't have the same dimensions:" <<
-             "\n\tMatrix A Dim: (" << nRows << ", " << nCols << ")" <<
-             "\n\tMatrix B Dim: (" << bRows << ", " << bCols << ")" << endl;
-        exit(1);
-
-    }
-}
-
-Matrix Matrix::add(Matrix *B) {
-    Matrix C = Matrix(nRows, nCols);
-
-    const int bCols = B->getNCols();
-    const int bRows = B->getNRows();
-
-    if (nRows == bRows && nCols == bCols) {
-        for (int i = 0; i < nRows; ++i) {
-            for (int j = 0; j < nCols; ++j) {
-                C.set(i, j, matrix[i][j] + B->get(i, j));
-            }
-        }
-        return C;
-    } else {
-        cout << "Matrix A and B don't have the same dimensions:" <<
-             "\n\tMatrix A Dim: (" << nRows << ", " << nCols << ")" <<
-             "\n\tMatrix B Dim: (" << bRows << ", " << bCols << ")" << endl;
-        exit(1);
-
-    }
-}
 
 void Matrix::checkDimsForMultiplication(int bRows) const {
     // first matrix for multiplication is always this
@@ -202,11 +163,6 @@ void Matrix::checkRowColExists(int n, bool checkRow) const {
 }
 
 
-vector<double> Matrix::getRow(int i) {
-    checkRowColExists(i, true);
-    return matrix[i];
-}
-
 vector<double> Matrix::getCol(int i) {
     checkRowColExists(i, false);
     vector<double> column = vector<double>(nRows);
@@ -228,7 +184,7 @@ Matrix Matrix::get(int rowStart, int rowEnd, int colStart, int colEnd) {
         cout << "Index start positions must be before the end positions:" << endl;
         cout << "\tRow Start: " << rowStart << ", Row End: " << rowEnd << endl;
         cout << "\tCol Start: " << colStart << ", Col End: " << colEnd << endl;
-        exit(1);
+        exit(13);
     }
 
     if (rowEnd > nRows || colEnd > nCols || rowStart < 0 || colStart < 0) {
@@ -237,7 +193,7 @@ Matrix Matrix::get(int rowStart, int rowEnd, int colStart, int colEnd) {
         cout << "\tCols in matrix: " << nCols << endl;
         cout << "\tYou tried: Row Start " << rowStart << ", Row End " << rowEnd << endl;
         cout << "\tYou tried: Col Start " << colStart << ", Col End " << colEnd << endl;
-        exit(1);
+        exit(14);
     }
 
     int newMatrixRows = rowEnd - rowStart;

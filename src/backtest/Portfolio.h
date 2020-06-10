@@ -27,7 +27,7 @@ private:
     void checkWeights(vector<double> &w) const;
 
 public:
-    BacktestResults backtest(double dailyReturn);
+    BacktestResults backtest(double targetReturn);
 
     explicit Portfolio(RunConfig config_);
 
@@ -37,6 +37,5 @@ public:
     PortfolioOptimiser optimiser = PortfolioOptimiser(1, 1, 1, 1);
     int nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength;
 };
-
 
 #endif

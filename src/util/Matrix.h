@@ -13,8 +13,8 @@ private:
     int nCols{};
     vector<vector<double>> matrix{};
     // to store rows and then columns
-    // matrix = <<a11, a12, a13>, <a21, a22, a23>> for a 2x3 matrix
-    // assets is columns, rows are days: C_ij = ith asseth, jth day
+    // C (matrix) = <<a11, a12, a13>, <a21, a22, a23>> for a 2x3 matrix
+    // assets is columns, rows are days: C_ij = ith day, jth asset
 
     void checkInputRowColDimensions(int n, int m) const;
 
@@ -40,17 +40,11 @@ public:
 
     void print();
 
-    vector<double> getRow(int i);
-
     vector<double> getCol(int i);
 
     vector<double> multiplyVector(vector<double> *vec);
 
     Matrix multiply(Matrix *B);
-
-    Matrix subtract(Matrix *B);
-
-    Matrix add(Matrix *B);
 };
 
 #endif //MARKOWITZPORTFOLIOOPTIMISER_MATRIX_H

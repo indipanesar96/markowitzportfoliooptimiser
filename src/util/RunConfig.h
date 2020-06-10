@@ -6,22 +6,9 @@
 #include <cstdlib>
 
 using namespace std;
-
-
-//struct RunConfig {
-//
-//    double initialLambda;
-//    double initialMu;
-//    int nDays;
-//    int nAssets;
-//    int tWindowLength = 12; //days;
-//    int bWindowLength = 100; //days;
-//    string fileName;
-//    double EPSILON = pow(10, -7);
-//    double WEIGHTSTOLERANCE = pow(10, -3);
-//} Default;
-
-class RunConfig{
+// to store all input parameters in a nice clean way instead of passing
+// all individually to Portfolio::backtest()
+class RunConfig {
 
 public:
     RunConfig(
@@ -42,7 +29,7 @@ public:
         bWindowLength = bWindowLength_;
     }
 
-    void setNAssets(int n_){
+    void setNAssets(int n_) {
         nAssets = n_;
     }
 

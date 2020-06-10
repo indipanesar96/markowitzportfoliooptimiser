@@ -4,13 +4,8 @@
 struct BacktestResults {
     double retOOS;
     double retIS;
-    double stdOOS;
-    double stdIS;
-};
-
-struct PortfolioMetrics {
-    double returns;
-    double covariance;
+    double varOOS;
+    double varIS;
 };
 
 #endif //MARKOWITZPORTFOLIOOPTIMISER_BACKTESTRESULTS_H

@@ -2,12 +2,12 @@
 #include <fstream>
 #include "csv.h"
 #include "DataRepository.h"
-#include "../util/Matrix.h"
-
 using namespace std;
 
 
 void DataRepository::readData(Matrix* matrix) {
+    // predominantly unchanged from what Panos provided except line 22
+
     char tmp[100]; // this is the max size the filename can be, otherwise stack buffer overflow
     ifstream file(strcpy(tmp, fileName.c_str()));
     Csv csv(file);
@@ -17,6 +17,8 @@ void DataRepository::readData(Matrix* matrix) {
         // i = return number ie day number
         // j = asset number
         while (csv.getline(line) != 0) {
+
+            // if we onl require nAssets, don't read in the whole row
             for (int j = 0; j < min(csv.getnfield(), nAssets); j++) {
                 matrix->set(i, j, string_to_double(csv.getfield(j)));
             }

@@ -9,21 +9,26 @@ using namespace std;
 
 Portfolio::Portfolio(RunConfig config_) {
     config = config_;
+
+    // load data inside here
     allReturns = Matrix(config_.nDays, config_.nAssets);
 
     DataRepository(config_.fileName, config_.nAssets).readData(&allReturns);
 
     nWindows = (config.nDays - config.bWindowLength) / config.tWindowLength;
 
+    // pass through values from our RunConfig to initialise our optimiser
     optimiser = PortfolioOptimiser(config_.EPSILON,
                                    config_.initialLambda,
                                    config_.initialMu,
                                    config_.nAssets);
 }
 
-BacktestResults Portfolio::backtest(double dailyReturn) {
+BacktestResults Portfolio::backtest(double targetReturn) {
+
     // assets is columns, rows are days: C_ij = ith asset, jth day
-    optimiser.setTargetDailyReturn(dailyReturn);
+    // using the setter to change the target return every time
+    optimiser.setTargetReturn(targetReturn);
 
     vector<double> portReturnsOOS = vector<double>(nWindows);
     vector<double> portCovarianceOOS = vector<double>(nWindows);
@@ -43,6 +48,7 @@ BacktestResults Portfolio::backtest(double dailyReturn) {
         int tStart = day + config.bWindowLength;
         int tEnd = day + config.bWindowLength + config.tWindowLength; // end not inclusive
 
+        // splicing all returns into in and out of sample windows
         Matrix balanceWindow = allReturns.getAllCols(bStart, bEnd);
         Matrix testWindow = allReturns.getAllCols(tStart, tEnd);
 
@@ -56,6 +62,7 @@ BacktestResults Portfolio::backtest(double dailyReturn) {
         currentWindow += 1;
     }
 
+    // below is the output required for the time complexity analysis
     //    cout << "(Average Number of Shorts, Target Return): " << nShorts << ", " << dailyReturn <<endl;
 
     // returning the means and variances of portfolio return across all windows, Out Of Sample & In sample
@@ -75,29 +82,33 @@ void Portfolio::evaluate(
         vector<double> *covariancesVector,
         int index
 ) {
+    // function used to evaluate the performance of our portfolio with weights from QCM
+    // Calculate mean returns and variance of the portfolio
 
     vector<double> aveAssetReturns = ParameterEstimator::estimateMultipleMeans(m);
+    returnsVector->at(index) = innerProduct(&aveAssetReturns, weights);
 
     Matrix cov = ParameterEstimator::estimateCovariances(m, &aveAssetReturns);
     vector<double> sigmaW = cov.multiplyVector(weights); // Sigma * w
-
-    returnsVector->at(index) = innerProduct(&aveAssetReturns, weights);
     covariancesVector->at(index) = innerProduct(weights, &sigmaW); // w' * Sigma * w
 }
 
 
 vector<double> Portfolio::balance(Matrix *m) {
+    // function used to generate weights by wrapping the call to
+    // optimiser.calculateWeights
+
     vector<double> meanReturns = ParameterEstimator::estimateMultipleMeans(m);
-
     Matrix cov = ParameterEstimator::estimateCovariances(m, &meanReturns);
-
     vector<double> weights = optimiser.calculateWeights(&cov, &meanReturns);
     this->checkWeights(weights);
+
     return weights;
 
 }
 
 void Portfolio::checkWeights(vector<double> &w) const {
+    // a vital check to ensure that our weights summed to unity to within a tolerance
 
     double sum = accumulate(w.begin(), w.end(), 0.0);
 

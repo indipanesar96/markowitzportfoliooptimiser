@@ -29,7 +29,7 @@ public:
         nAssets = nAssets_;
     }
 
-    void setTargetDailyReturn(double portfolioReturn_) {
+    void setTargetReturn(double portfolioReturn_) {
         targetReturn = portfolioReturn_;
     }
 

@@ -4,6 +4,8 @@ import pandas as pd
 
 figsize = (8, 6)
 
+# Just some code to generate the plots
+
 
 def read(filename):
     df = pd.read_csv(filename)
